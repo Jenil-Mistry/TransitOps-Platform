@@ -26,11 +26,6 @@ dist-ssr
 # PDF directory
 pdf/
 
-# Environment files
+# Environment variables
 .env
-.env.local
-.env.*.local
-.env.development
-.env.test
-.env.production
-
+.env.*
