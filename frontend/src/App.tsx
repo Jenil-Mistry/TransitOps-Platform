@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './components/Layout';
+import DashboardLayout from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Vehicles from './pages/Vehicles';
 import Drivers from './pages/Drivers';
@@ -19,8 +19,8 @@ function App() {
 
   return (
     <Router>
-      <Layout>
-        <Routes>
+      <Routes>
+        <Route element={<DashboardLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/vehicles" element={<Vehicles />} />
           <Route path="/drivers" element={<Drivers />} />
@@ -29,8 +29,8 @@ function App() {
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
+        </Route>
+      </Routes>
     </Router>
   );
 }
