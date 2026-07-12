@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────
 // Trip Routes
 // All routes require authentication
-// Trip creation and lifecycle actions restricted to DISPATCHER
+// Trip creation and lifecycle actions restricted to DISPATCHER & FLEET_MANAGER
 // ─────────────────────────────────────────────────────────
 
 const express = require('express');
@@ -28,16 +28,16 @@ router.get('/', getAllTrips);
 // GET /api/trips/:id — all roles can view trip detail
 router.get('/:id', getTripById);
 
-// POST /api/trips — Dispatcher creates trips
-router.post('/', authorize('DISPATCHER'), createTrip);
+// POST /api/trips — Dispatcher & Fleet Manager creates trips
+router.post('/', authorize('DISPATCHER', 'FLEET_MANAGER'), createTrip);
 
-// PATCH /api/trips/:id/dispatch — Dispatcher dispatches trips
-router.patch('/:id/dispatch', authorize('DISPATCHER'), dispatchTrip);
+// PATCH /api/trips/:id/dispatch — Dispatcher & Fleet Manager dispatches trips
+router.patch('/:id/dispatch', authorize('DISPATCHER', 'FLEET_MANAGER'), dispatchTrip);
 
-// PATCH /api/trips/:id/complete — Dispatcher completes trips
-router.patch('/:id/complete', authorize('DISPATCHER'), completeTrip);
+// PATCH /api/trips/:id/complete — Dispatcher & Fleet Manager completes trips
+router.patch('/:id/complete', authorize('DISPATCHER', 'FLEET_MANAGER'), completeTrip);
 
-// PATCH /api/trips/:id/cancel — Dispatcher cancels trips
-router.patch('/:id/cancel', authorize('DISPATCHER'), cancelTrip);
+// PATCH /api/trips/:id/cancel — Dispatcher & Fleet Manager cancels trips
+router.patch('/:id/cancel', authorize('DISPATCHER', 'FLEET_MANAGER'), cancelTrip);
 
 module.exports = router;

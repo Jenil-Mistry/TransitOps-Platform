@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { User, Settings, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { logout, user } = useAuthStore();
 
-  // Mount/Unmount logic for animations
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
     if (isOpen) {
@@ -19,7 +20,6 @@ export default function ProfileDropdown() {
     return () => clearTimeout(timeoutId);
   }, [isOpen]);
 
-  // Close on outside click or Escape
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -48,6 +48,12 @@ export default function ProfileDropdown() {
     setIsOpen(false);
   };
 
+  const handleLogout = () => {
+    setIsOpen(false);
+    logout();
+    navigate('/');
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Avatar Trigger */}
@@ -62,27 +68,21 @@ export default function ProfileDropdown() {
 
       {/* Dropdown Menu */}
       {isMounted && (
-        <div 
-          className={`absolute right-0 mt-3 w-[280px] bg-white rounded-[16px] shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[#ECECEC] z-[100] transition-all duration-200 origin-top-right ${
-            isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-2'
+        <div
+          className={`absolute right-0 mt-2 w-56 rounded-2xl bg-white border border-[#ECECEC] shadow-xl py-2 z-50 transition-all duration-200 origin-top-right ${
+            isOpen
+              ? 'opacity-100 scale-100 translate-y-0'
+              : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
           }`}
+          role="menu"
         >
-          
-          {/* Header Section */}
-          <div className="flex items-center px-4 py-4 space-x-3">
-            <div className="w-10 h-10 rounded-full bg-[#FAFAFA] flex-shrink-0 flex items-center justify-center text-[#111111] font-semibold text-sm border border-[#ECECEC]">
-              AF
-            </div>
-            <div className="flex flex-col flex-1 min-w-0 justify-center">
-              <span className="text-sm font-semibold text-[#111111] truncate leading-tight mb-0.5">Admin Fleet</span>
-              <span className="text-xs text-[#6B7280] truncate leading-tight">Fleet Manager</span>
-            </div>
+          {/* User Info Header */}
+          <div className="px-4 py-3 border-b border-[#ECECEC]">
+            <p className="text-sm font-semibold text-[#111111] truncate">{user?.name || 'Fleet Manager'}</p>
+            <p className="text-xs text-[#6B7280] truncate">{user?.email || 'manager@transitops.com'}</p>
           </div>
 
-          {/* Separator */}
-          <div className="h-px bg-[#ECECEC] w-full" />
-
-          {/* Main Menu Items */}
+          {/* Menu Items */}
           <div className="px-2 py-2 space-y-1">
             <button
               onClick={() => handleNavigation('/profile')}
@@ -107,10 +107,10 @@ export default function ProfileDropdown() {
           {/* Logout Section */}
           <div className="px-2 py-2">
             <button
-              onClick={() => handleNavigation('/logout')}
-              className="w-full flex items-center px-2 py-2 text-sm font-medium text-[#111111] rounded-lg hover:bg-[#FAFAFA] transition-colors cursor-pointer focus:outline-none focus:bg-[#FAFAFA]"
+              onClick={handleLogout}
+              className="w-full flex items-center px-2 py-2 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors cursor-pointer focus:outline-none focus:bg-red-50"
             >
-              <LogOut className="w-4 h-4 mr-3 text-[#6B7280]" />
+              <LogOut className="w-4 h-4 mr-3 text-red-500" />
               Logout
             </button>
           </div>

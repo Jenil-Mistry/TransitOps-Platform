@@ -14,15 +14,22 @@ import { useAuthStore } from './store/useAuthStore';
 function App() {
   const { isAuthenticated } = useAuthStore();
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
   return (
     <Router>
       <Routes>
-        <Route element={<DashboardLayout />}>
-          <Route path="/" element={<Dashboard />} />
+        {/* Route / : Shows Login form as per backend (redirects to /dashboard if already logged in) */}
+        <Route 
+          path="/" 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
+        />
+        <Route 
+          path="/login" 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
+        />
+
+        {/* Protected Dashboard Layout Routes starting with /dashboard */}
+        <Route element={isAuthenticated ? <DashboardLayout /> : <Navigate to="/" replace />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/vehicles" element={<Vehicles />} />
           <Route path="/drivers" element={<Drivers />} />
           <Route path="/trips" element={<Trips />} />
@@ -30,8 +37,10 @@ function App() {
           <Route path="/expenses" element={<Expenses />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
+
+        {/* Fallback wildcard route redirects to /dashboard or / */}
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} replace />} />
       </Routes>
     </Router>
   );

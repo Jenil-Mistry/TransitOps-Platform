@@ -1,18 +1,39 @@
 import { create } from 'zustand';
 import type { FuelLog } from '../types';
+import { fuelApi } from '../services/api';
 
 interface ExpenseState {
   fuelLogs: FuelLog[];
-  addFuelLog: (log: Omit<FuelLog, 'id'>) => void;
+  loading: boolean;
+  fetchFuelLogs: () => Promise<void>;
+  addFuelLog: (log: Omit<FuelLog, 'id'>) => Promise<void>;
 }
 
-const mockFuelLogs: FuelLog[] = [
-  { id: 'f1', vehicleId: 'v1', liters: 50, cost: 85.5, date: new Date().toISOString() },
-];
+export const useExpenseStore = create<ExpenseState>((set, get) => ({
+  fuelLogs: [],
+  loading: false,
 
-export const useExpenseStore = create<ExpenseState>((set) => ({
-  fuelLogs: mockFuelLogs,
-  addFuelLog: (logData) => set((state) => ({
-    fuelLogs: [...state.fuelLogs, { ...logData, id: Math.random().toString(36).substr(2, 9) }]
-  })),
+  fetchFuelLogs: async () => {
+    set({ loading: true });
+    try {
+      const data = await fuelApi.getAll();
+      set({ fuelLogs: data || [], loading: false });
+    } catch (err) {
+      console.warn('⚠️ Could not fetch fuel logs from API:', err);
+      set({ loading: false });
+    }
+  },
+
+  addFuelLog: async (logData) => {
+    try {
+      const created = await fuelApi.create(logData);
+      set((state) => ({
+        fuelLogs: [created, ...state.fuelLogs]
+      }));
+    } catch (err) {
+      console.error('Failed to create fuel log on backend API:', err);
+      await get().fetchFuelLogs();
+      throw err;
+    }
+  },
 }));

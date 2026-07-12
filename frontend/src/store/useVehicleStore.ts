@@ -1,32 +1,80 @@
 import { create } from 'zustand';
 import type { Vehicle, VehicleStatus } from '../types';
+import { vehicleApi } from '../services/api';
 
 interface VehicleState {
   vehicles: Vehicle[];
-  addVehicle: (vehicle: Omit<Vehicle, 'id'>) => void;
-  updateVehicle: (id: string, updates: Partial<Vehicle>) => void;
-  updateVehicleStatus: (id: string, status: VehicleStatus) => void;
-  deleteVehicle: (id: string) => void;
+  loading: boolean;
+  fetchVehicles: () => Promise<void>;
+  addVehicle: (vehicle: Omit<Vehicle, 'id'>) => Promise<void>;
+  updateVehicle: (id: string, updates: Partial<Vehicle>) => Promise<void>;
+  updateVehicleStatus: (id: string, status: VehicleStatus) => Promise<void>;
+  deleteVehicle: (id: string) => Promise<void>;
 }
 
-const mockVehicles: Vehicle[] = [
-  { id: 'v1', registrationNumber: 'VAN-05', name: 'Ford Transit', type: 'Van', maxLoadCapacity: 500, odometer: 15000, acquisitionCost: 35000, status: 'Available' },
-  { id: 'v2', registrationNumber: 'TRK-10', name: 'Volvo FH', type: 'Truck', maxLoadCapacity: 15000, odometer: 45000, acquisitionCost: 120000, status: 'On Trip' },
-  { id: 'v3', registrationNumber: 'TRK-11', name: 'Scania R', type: 'Truck', maxLoadCapacity: 20000, odometer: 80000, acquisitionCost: 140000, status: 'In Shop' },
-];
+export const useVehicleStore = create<VehicleState>((set, get) => ({
+  vehicles: [],
+  loading: false,
 
-export const useVehicleStore = create<VehicleState>((set) => ({
-  vehicles: mockVehicles,
-  addVehicle: (vehicleData) => set((state) => ({
-    vehicles: [...state.vehicles, { ...vehicleData, id: Math.random().toString(36).substr(2, 9) }]
-  })),
-  updateVehicle: (id, updates) => set((state) => ({
-    vehicles: state.vehicles.map(v => v.id === id ? { ...v, ...updates } : v)
-  })),
-  updateVehicleStatus: (id, status) => set((state) => ({
-    vehicles: state.vehicles.map(v => v.id === id ? { ...v, status } : v)
-  })),
-  deleteVehicle: (id) => set((state) => ({
-    vehicles: state.vehicles.filter(v => v.id !== id)
-  })),
+  fetchVehicles: async () => {
+    set({ loading: true });
+    try {
+      const data = await vehicleApi.getAll();
+      set({ vehicles: data || [], loading: false });
+    } catch (err) {
+      console.warn('⚠️ Could not fetch vehicles from API:', err);
+      set({ loading: false });
+    }
+  },
+
+  addVehicle: async (vehicleData) => {
+    try {
+      const created = await vehicleApi.create(vehicleData);
+      set((state) => ({
+        vehicles: [created, ...state.vehicles]
+      }));
+    } catch (err) {
+      console.error('Failed to create vehicle on backend API:', err);
+      throw err;
+    }
+  },
+
+  updateVehicle: async (id, updates) => {
+    try {
+      const updated = await vehicleApi.update(id, updates);
+      set((state) => ({
+        vehicles: state.vehicles.map(v => v.id === id ? updated : v)
+      }));
+    } catch (err) {
+      console.error('Failed to update vehicle on backend API:', err);
+      await get().fetchVehicles();
+      throw err;
+    }
+  },
+
+  updateVehicleStatus: async (id, status) => {
+    try {
+      await vehicleApi.update(id, { status });
+      set((state) => ({
+        vehicles: state.vehicles.map(v => v.id === id ? { ...v, status } : v)
+      }));
+    } catch (err) {
+      console.error('Failed to update vehicle status on backend API:', err);
+      await get().fetchVehicles();
+      throw err;
+    }
+  },
+
+  deleteVehicle: async (id) => {
+    try {
+      await vehicleApi.delete(id);
+      set((state) => ({
+        vehicles: state.vehicles.filter(v => v.id !== id)
+      }));
+    } catch (err) {
+      console.error('Failed to delete vehicle on backend API:', err);
+      await get().fetchVehicles();
+      throw err;
+    }
+  },
 }));
