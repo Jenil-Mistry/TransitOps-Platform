@@ -151,7 +151,7 @@ Add your UI previews here:
 
 ```md
 ![Dashboard](./preview/dashboard.png)
-![Analytics](./preview/analytics.png)
+![Trips](./preview/trips.png)
 ```
 
 ---
