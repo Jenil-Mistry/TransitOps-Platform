@@ -4,7 +4,7 @@ import SidebarNavigation from './SidebarNavigation';
 import type { SidebarNavigationItemProps } from './SidebarNavigationItem';
 
 const navItems: SidebarNavigationItemProps[] = [
-  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Fleet', path: '/vehicles', icon: Truck },
   { name: 'Drivers', path: '/drivers', icon: Users },
   { name: 'Trips', path: '/trips', icon: Route },

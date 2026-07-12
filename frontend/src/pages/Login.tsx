@@ -1,19 +1,62 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import type { Role } from '../types';
+import axios from 'axios';
 
 export default function Login() {
   const { login } = useAuthStore();
-  const [role, setRole] = useState<Role>('Fleet Manager');
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [role, setRole] = useState<Role>('Fleet Manager');
+  const [email, setEmail] = useState('manager@transitops.com');
+  const [password, setPassword] = useState('password123');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleRoleChange = (selectedRole: Role) => {
+    setRole(selectedRole);
+    const emailMap: Record<string, string> = {
+      'Fleet Manager': 'manager@transitops.com',
+      'Driver': 'dispatcher@transitops.com',
+      'Safety Officer': 'safety@transitops.com',
+      'Financial Analyst': 'finance@transitops.com',
+    };
+    setEmail(emailMap[selectedRole] || 'manager@transitops.com');
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    login({
-      id: '1',
-      name: 'Demo User',
-      email: 'demo@transitops.com',
-      role,
-    });
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await axios.post('http://localhost:3000/api/auth/login', {
+        email,
+        password
+      });
+      const token = res.data?.data?.token;
+      const backendUser = res.data?.data?.user;
+
+      if (token && backendUser) {
+        localStorage.setItem('transitops_token', token);
+        login({
+          id: backendUser.id,
+          name: backendUser.name,
+          email: backendUser.email,
+          role: role,
+        });
+        navigate('/dashboard');
+      } else {
+        setError('Invalid response from server during login.');
+      }
+    } catch (err: any) {
+      console.error('⚠️ Login error:', err?.response?.data || err.message);
+      const serverMsg = err?.response?.data?.error?.message || err?.response?.data?.message || err.message;
+      setError(serverMsg || 'Login failed. Please check your email and password or ensure backend is running.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,43 +72,72 @@ export default function Login() {
             </div>
             <h2 className="mt-6 text-xl font-bold text-[#111111] tracking-tight">Sign in to your account</h2>
             <p className="mt-2 text-sm text-[#6B7280]">
-              Manage your fleet operations efficiently
+              Enter credentials directly or select a quick role
             </p>
 
-            <div className="mt-8">
-              <form onSubmit={handleLogin} className="space-y-6">
+            <div className="mt-6">
+              <label className="block text-[10px] font-bold text-[#6B7280] mb-2 uppercase tracking-wide">
+                Quick Role Fill
+              </label>
+              <div className="grid grid-cols-2 gap-2 mb-6">
+                {(['Fleet Manager', 'Driver', 'Safety Officer', 'Financial Analyst'] as Role[]).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => handleRoleChange(r)}
+                    className={`text-xs py-2 px-3 rounded-xl font-semibold border transition-all ${
+                      role === r
+                        ? 'bg-[#0C0D0D] text-white border-[#0C0D0D]'
+                        : 'bg-[#FAFAFA] text-[#6B7280] border-[#ECECEC] hover:bg-[#F3F4F6]'
+                    }`}
+                  >
+                    {r === 'Driver' ? 'Dispatcher / Driver' : r}
+                  </button>
+                ))}
+              </div>
+
+              <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <label htmlFor="role" className="block text-xs font-semibold text-[#111111] mb-2 uppercase tracking-wide">
-                    Select Role
+                  <label htmlFor="email" className="block text-xs font-semibold text-[#111111] mb-1.5 uppercase tracking-wide">
+                    Email Address
                   </label>
-                  <div className="mt-1">
-                    <select
-                      id="role"
-                      name="role"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value as Role)}
-                      className="w-full h-12 px-4 bg-white border border-[#ECECEC] rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all"
-                    >
-                      <option value="Fleet Manager">Fleet Manager</option>
-                      <option value="Driver">Driver</option>
-                      <option value="Safety Officer">Safety Officer</option>
-                      <option value="Financial Analyst">Financial Analyst</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl p-4">
-                  <p className="text-xs text-[#6B7280]">
-                    <span className="font-semibold text-[#111111]">Note:</span> This is a demo. No password required. Just select a role and sign in to explore the dashboard.
-                  </p>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full h-11 px-4 bg-white border border-[#ECECEC] rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all"
+                    required
+                  />
                 </div>
 
                 <div>
+                  <label htmlFor="password" className="block text-xs font-semibold text-[#111111] mb-1.5 uppercase tracking-wide">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full h-11 px-4 bg-white border border-[#ECECEC] rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all"
+                    required
+                  />
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-3">
+                    {error}
+                  </div>
+                )}
+
+                <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full h-12 bg-[#0C0D0D] text-white font-semibold text-sm rounded-2xl hover:scale-[1.02] transition-all duration-200 flex justify-center items-center"
+                    disabled={loading}
+                    className="w-full h-12 bg-[#0C0D0D] text-white font-semibold text-sm rounded-2xl hover:scale-[1.02] transition-all duration-200 flex justify-center items-center disabled:opacity-50"
                   >
-                    Sign in
+                    {loading ? 'Signing in...' : 'Sign in to Dashboard'}
                   </button>
                 </div>
               </form>
