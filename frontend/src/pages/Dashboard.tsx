@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { useTripStore } from '../store/useTripStore';
 import { useDriverStore } from '../store/useDriverStore';
@@ -12,15 +13,40 @@ export default function Dashboard() {
   const { trips } = useTripStore();
   const { drivers } = useDriverStore();
 
-  const activeVehicles = vehicles.filter(v => v.status === 'On Trip').length;
-  const availableVehicles = vehicles.filter(v => v.status === 'Available').length;
-  const inMaintenance = vehicles.filter(v => v.status === 'In Shop').length;
+  const [typeFilter, setTypeFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [regionFilter, setRegionFilter] = useState('India');
 
-  const activeTrips = trips.filter(t => t.status === 'Dispatched').length;
-  const pendingTrips = trips.filter(t => t.status === 'Draft').length;
+  // Filter vehicles by Type, Status, and Region
+  const filteredVehicles = vehicles.filter((v) => {
+    // Type check
+    if (typeFilter !== 'All' && v.type !== typeFilter) {
+      return false;
+    }
+    // Status check
+    if (statusFilter !== 'All' && v.status !== statusFilter) {
+      return false;
+    }
+    // Region check (if region is set on vehicle or filtering strictly)
+    if (regionFilter !== 'All' && regionFilter !== 'India') {
+      if (v.region && v.region !== regionFilter) return false;
+    }
+    return true;
+  });
+
+  // Filter trips for filtered vehicles
+  const filteredVehiclesIds = new Set(filteredVehicles.map(v => v.id));
+  const filteredTrips = trips.filter(t => filteredVehiclesIds.has(t.vehicleId) || typeFilter === 'All');
+
+  const activeVehicles = filteredVehicles.filter(v => v.status === 'On Trip').length;
+  const availableVehicles = filteredVehicles.filter(v => v.status === 'Available').length;
+  const inMaintenance = filteredVehicles.filter(v => v.status === 'In Shop').length;
+
+  const activeTrips = filteredTrips.filter(t => t.status === 'Dispatched').length;
+  const pendingTrips = filteredTrips.filter(t => t.status === 'Draft').length;
 
   const driversOnDuty = drivers.filter(d => d.status === 'On Trip').length;
-  const fleetUtilization = vehicles.length ? Math.round((activeVehicles / vehicles.length) * 100) : 0;
+  const fleetUtilization = filteredVehicles.length ? Math.round((activeVehicles / filteredVehicles.length) * 100) : 0;
 
   const kpis = [
     { label: 'ACTIVE VEHICLES', value: activeVehicles, id: 1 },
@@ -36,12 +62,19 @@ export default function Dashboard() {
     { name: 'Available', count: availableVehicles, color: '#111111' },
     { name: 'On Trip', count: activeVehicles, color: '#6B7280' },
     { name: 'In Shop', count: inMaintenance, color: '#9CA3AF' },
-    { name: 'Retired', count: vehicles.filter(v => v.status === 'Retired').length, color: '#ECECEC' },
+    { name: 'Retired', count: filteredVehicles.filter(v => v.status === 'Retired').length, color: '#ECECEC' },
   ];
 
   return (
     <div className="space-y-6">
-      <DashboardFilters />
+      <DashboardFilters
+        typeFilter={typeFilter}
+        setTypeFilter={setTypeFilter}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        regionFilter={regionFilter}
+        setRegionFilter={setRegionFilter}
+      />
 
       {/* KPI Section */}
       <BaseCard bodyClassName="flex items-center overflow-x-auto space-x-6 hide-scrollbar">
@@ -54,7 +87,7 @@ export default function Dashboard() {
         {/* Recent Trips Table */}
         <div className="lg:col-span-2">
           <BaseCard title="Recent Trips">
-            <RecentTripsTable trips={trips} vehicles={vehicles} drivers={drivers} />
+            <RecentTripsTable trips={filteredTrips} vehicles={filteredVehicles} drivers={drivers} />
           </BaseCard>
         </div>
 

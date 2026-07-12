@@ -104,6 +104,7 @@ export const mapVehicleFromBackend = (v: any): Vehicle => ({
   maxLoadCapacity: v.maxLoadCapacity,
   odometer: v.odometer,
   acquisitionCost: v.acquisitionCost,
+  region: v.region || 'India',
   status: toFrontendStatus(v.status) as VehicleStatus,
 });
 
@@ -136,10 +137,10 @@ export const mapTripFromBackend = (t: any): Trip => ({
 export const mapMaintenanceFromBackend = (m: any): MaintenanceLog => ({
   id: m.id,
   vehicleId: m.vehicleId,
-  date: m.serviceDate ? new Date(m.serviceDate).toISOString() : (m.createdAt || new Date().toISOString()),
+  date: m.startDate || m.serviceDate ? new Date(m.startDate || m.serviceDate).toISOString() : (m.createdAt || new Date().toISOString()),
   description: m.description,
   cost: m.cost,
-  status: toFrontendStatus(m.status) as 'Open' | 'Closed',
+  status: (m.status === 'COMPLETED' || m.status === 'Closed' || m.status === 'Completed') ? 'Closed' : 'Open',
 });
 
 export const mapFuelFromBackend = (f: any): FuelLog => ({
@@ -160,6 +161,7 @@ export const vehicleApi = {
   create: async (data: Omit<Vehicle, 'id'>): Promise<Vehicle> => {
     const res = await api.post('/vehicles', {
       ...data,
+      type: data.type ? data.type.toUpperCase() : 'TRUCK',
       status: toBackendStatus(data.status),
     });
     return mapVehicleFromBackend(res.data.data.vehicle);
@@ -243,11 +245,19 @@ export const maintenanceApi = {
     return (res.data?.data?.maintenanceLogs || []).map(mapMaintenanceFromBackend);
   },
   create: async (data: Omit<MaintenanceLog, 'id'>): Promise<MaintenanceLog> => {
+    // Extract serviceType from description prefix: "[Oil Change] some notes"
+    let serviceType = 'General Inspection';
+    let description = data.description || '';
+    const match = description.match(/^\[([^\]]+)\]\s*(.*)/);
+    if (match) {
+      serviceType = match[1];
+      description = match[2];
+    }
     const res = await api.post('/maintenance', {
       vehicleId: data.vehicleId,
-      description: data.description,
+      serviceType,
+      description: description || serviceType,
       cost: data.cost,
-      serviceDate: data.date,
     });
     return mapMaintenanceFromBackend(res.data.data.maintenanceLog);
   },
@@ -269,7 +279,8 @@ export const fuelApi = {
       tripId: data.tripId,
       liters: data.liters,
       cost: data.cost,
-      loggedAt: data.date,
+      date: data.date || new Date().toISOString(),
+      loggedAt: data.date || new Date().toISOString(),
     });
     return mapFuelFromBackend(res.data.data.fuelLog);
   },

@@ -17,6 +17,7 @@ export interface Vehicle {
   maxLoadCapacity: number; // in kg
   odometer: number;
   acquisitionCost: number;
+  region?: string;
   status: VehicleStatus;
 }
 
