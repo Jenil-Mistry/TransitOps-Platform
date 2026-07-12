@@ -26,17 +26,19 @@ const authRoutes = require('./routes/auth.routes');
 const vehicleRoutes = require('./routes/vehicle.routes');
 const driverRoutes = require('./routes/driver.routes');
 const tripRoutes = require('./routes/trip.routes');
+const maintenanceRoutes = require('./routes/maintenance.routes');
+const fuelRoutes = require('./routes/fuel.routes');
+const expenseRoutes = require('./routes/expense.routes');
+const reportRoutes = require('./routes/report.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/trips', tripRoutes);
-
-// Future routes will be mounted here:
-// app.use('/api/maintenance', maintenanceRoutes);
-// app.use('/api/fuel', fuelRoutes);
-// app.use('/api/expenses', expenseRoutes);
-// app.use('/api/reports', reportRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/fuel', fuelRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/reports', reportRoutes);
 
 // ─── Global Error Handler (must be LAST) ─────────────────
 const errorHandler = require('./middleware/error.middleware');
