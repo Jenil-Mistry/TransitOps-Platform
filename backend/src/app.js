@@ -1,14 +1,47 @@
-const express = require('express')
+// ─────────────────────────────────────────────────────────
+// Express App Configuration
+// Central file that sets up middleware, routes, and error handling
+// ─────────────────────────────────────────────────────────
 
-const app = express()
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
 
+const app = express();
+
+// ─── Global Middleware ───────────────────────────────────
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+}));
+app.use(express.json());
+
+// ─── Health Check ────────────────────────────────────────
 app.get('/', (req, res) => {
-    res.send("This is the backend server!")
-})
+  res.json({ success: true, message: 'TransitOps API is running' });
+});
 
-app.post('/', (req, res) => {
-    
-    res.send("This is the backend server!")
-})
+// ─── API Routes ──────────────────────────────────────────
+const authRoutes = require('./routes/auth.routes');
+const vehicleRoutes = require('./routes/vehicle.routes');
+const driverRoutes = require('./routes/driver.routes');
+const tripRoutes = require('./routes/trip.routes');
+const maintenanceRoutes = require('./routes/maintenance.routes');
+const fuelRoutes = require('./routes/fuel.routes');
+const expenseRoutes = require('./routes/expense.routes');
+const reportRoutes = require('./routes/report.routes');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/drivers', driverRoutes);
+app.use('/api/trips', tripRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/fuel', fuelRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/reports', reportRoutes);
+
+// ─── Global Error Handler (must be LAST) ─────────────────
+const errorHandler = require('./middleware/error.middleware');
+app.use(errorHandler);
 
 module.exports = app;
