@@ -28,6 +28,7 @@ enum VehicleType {
   TRUCK
   BUS
   CAR
+  BIKE
 }
 
 enum VehicleStatus {
