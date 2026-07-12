@@ -1,7 +1,7 @@
 import SearchBar from './SearchBar';
 import NotificationButton from './NotificationButton';
 import CreateTripButton from './CreateTripButton';
-import LogoutButton from './LogoutButton';
+import ProfileDropdown from './ProfileDropdown';
 
 export default function Navbar() {
   return (
@@ -9,11 +9,13 @@ export default function Navbar() {
       <div className="flex-1 max-w-2xl flex items-center">
         <SearchBar />
       </div>
-      
+
       <div className="flex items-center space-x-6">
         <NotificationButton />
         <CreateTripButton />
-        <LogoutButton />
+        <div className="pl-4 border-l border-[#E5E7EB]">
+          <ProfileDropdown />
+        </div>
       </div>
     </header>
   );

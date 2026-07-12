@@ -24,7 +24,7 @@ export default function BaseCard({
   bodyClassName
 }: BaseCardProps) {
   const hasHeader = title || actions;
-  
+
   return (
     <div className={cn("bg-white rounded-[24px] border border-[#ECECEC] card-shadow flex flex-col", className)}>
       {hasHeader && (

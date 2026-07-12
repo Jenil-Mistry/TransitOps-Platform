@@ -15,10 +15,10 @@ export default function Dashboard() {
   const activeVehicles = vehicles.filter(v => v.status === 'On Trip').length;
   const availableVehicles = vehicles.filter(v => v.status === 'Available').length;
   const inMaintenance = vehicles.filter(v => v.status === 'In Shop').length;
-  
+
   const activeTrips = trips.filter(t => t.status === 'Dispatched').length;
   const pendingTrips = trips.filter(t => t.status === 'Draft').length;
-  
+
   const driversOnDuty = drivers.filter(d => d.status === 'On Trip').length;
   const fleetUtilization = vehicles.length ? Math.round((activeVehicles / vehicles.length) * 100) : 0;
 

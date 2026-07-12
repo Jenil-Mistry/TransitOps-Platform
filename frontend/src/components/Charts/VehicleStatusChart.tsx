@@ -12,8 +12,8 @@ export default function VehicleStatusChart({ data }: VehicleStatusChartProps) {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} layout="vertical" margin={{ top: 0, right: 30, left: 0, bottom: 0 }}>
             <XAxis type="number" hide />
-            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fill: '#6B7280', fontSize: 12, fontWeight: 500}} width={80} />
-            <Tooltip cursor={{fill: '#FAFAFA'}} contentStyle={{borderRadius: '16px', border: '1px solid #ECECEC', boxShadow: '0 8px 24px rgba(0,0,0,.05)'}} />
+            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12, fontWeight: 500 }} width={80} />
+            <Tooltip cursor={{ fill: '#FAFAFA' }} contentStyle={{ borderRadius: '16px', border: '1px solid #ECECEC', boxShadow: '0 8px 24px rgba(0,0,0,.05)' }} />
             <Bar dataKey="count" barSize={12} radius={[0, 4, 4, 0]}>
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
