@@ -1,10 +1,37 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
+import Vehicles from './pages/Vehicles';
+import Drivers from './pages/Drivers';
+import Trips from './pages/Trips';
+import Maintenance from './pages/Maintenance';
+import Expenses from './pages/Expenses';
+import Settings from './pages/Settings';
+import Login from './pages/Login';
+import { useAuthStore } from './store/useAuthStore';
+
 function App() {
+  const { isAuthenticated } = useAuthStore();
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
   return (
-    <div className="flex h-screen items-center justify-center bg-slate-900 text-white">
-      <h1 className="text-5xl font-bold">
-        TransitOps Platform 🚍
-      </h1>
-    </div>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/vehicles" element={<Vehicles />} />
+          <Route path="/drivers" element={<Drivers />} />
+          <Route path="/trips" element={<Trips />} />
+          <Route path="/maintenance" element={<Maintenance />} />
+          <Route path="/expenses" element={<Expenses />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 
