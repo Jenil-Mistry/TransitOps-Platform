@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Vehicle, Driver, Trip, VehicleStatus, DriverStatus, TripStatus } from '../types';
+import type { Vehicle, Driver, Trip, MaintenanceLog, FuelLog, VehicleStatus, DriverStatus, TripStatus } from '../types';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -20,7 +20,6 @@ export const ensureToken = async (): Promise<string | null> => {
   if (!authPromise) {
     authPromise = (async () => {
       try {
-        // Log in with our seeded Fleet Manager account (`manager@transitops.com` / `password123`)
         const res = await axios.post(`${API_BASE_URL}/auth/login`, {
           email: 'manager@transitops.com',
           password: 'password123',
@@ -134,6 +133,24 @@ export const mapTripFromBackend = (t: any): Trip => ({
   completedAt: t.completedAt,
 });
 
+export const mapMaintenanceFromBackend = (m: any): MaintenanceLog => ({
+  id: m.id,
+  vehicleId: m.vehicleId,
+  date: m.serviceDate ? new Date(m.serviceDate).toISOString() : (m.createdAt || new Date().toISOString()),
+  description: m.description,
+  cost: m.cost,
+  status: toFrontendStatus(m.status) as 'Open' | 'Closed',
+});
+
+export const mapFuelFromBackend = (f: any): FuelLog => ({
+  id: f.id,
+  vehicleId: f.vehicleId,
+  tripId: f.tripId || undefined,
+  liters: f.liters,
+  cost: f.cost,
+  date: f.loggedAt ? new Date(f.loggedAt).toISOString() : new Date().toISOString(),
+});
+
 // ─── Vehicle API Calls ───────────────────────────────────
 export const vehicleApi = {
   getAll: async (): Promise<Vehicle[]> => {
@@ -216,6 +233,45 @@ export const tripApi = {
   cancel: async (id: string): Promise<Trip> => {
     const res = await api.patch(`/trips/${id}/cancel`);
     return mapTripFromBackend(res.data.data.trip);
+  },
+};
+
+// ─── Maintenance API Calls ───────────────────────────────
+export const maintenanceApi = {
+  getAll: async (): Promise<MaintenanceLog[]> => {
+    const res = await api.get('/maintenance?limit=100');
+    return (res.data?.data?.maintenanceLogs || []).map(mapMaintenanceFromBackend);
+  },
+  create: async (data: Omit<MaintenanceLog, 'id'>): Promise<MaintenanceLog> => {
+    const res = await api.post('/maintenance', {
+      vehicleId: data.vehicleId,
+      description: data.description,
+      cost: data.cost,
+      serviceDate: data.date,
+    });
+    return mapMaintenanceFromBackend(res.data.data.maintenanceLog);
+  },
+  complete: async (id: string): Promise<MaintenanceLog> => {
+    const res = await api.patch(`/maintenance/${id}/complete`);
+    return mapMaintenanceFromBackend(res.data.data.maintenanceLog);
+  },
+};
+
+// ─── Fuel & Expense API Calls ────────────────────────────
+export const fuelApi = {
+  getAll: async (): Promise<FuelLog[]> => {
+    const res = await api.get('/fuel?limit=100');
+    return (res.data?.data?.fuelLogs || []).map(mapFuelFromBackend);
+  },
+  create: async (data: Omit<FuelLog, 'id'>): Promise<FuelLog> => {
+    const res = await api.post('/fuel', {
+      vehicleId: data.vehicleId,
+      tripId: data.tripId,
+      liters: data.liters,
+      cost: data.cost,
+      loggedAt: data.date,
+    });
+    return mapFuelFromBackend(res.data.data.fuelLog);
   },
 };
 

@@ -1,16 +1,19 @@
+import { useState } from 'react';
 import { useDriverStore } from '../store/useDriverStore';
 import DriverFilters from '../components/Cards/DriverFilters';
 import AddDriverButton from '../components/Cards/AddDriverButton';
 import DriverTable from '../components/Tables/DriverTable';
+import AddDriverModal from '../components/Modals/AddDriverModal';
 
 export default function Drivers() {
   const { drivers } = useDriverStore();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   return (
     <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col">
       <div className="flex justify-between items-center bg-white p-6 rounded-[24px] border border-[#ECECEC] card-shadow">
         <DriverFilters />
-        <AddDriverButton />
+        <AddDriverButton onClick={() => setIsAddModalOpen(true)} />
       </div>
 
       <div className="bg-white rounded-[24px] p-6 border border-[#ECECEC] card-shadow flex-1 overflow-hidden flex flex-col">
@@ -25,6 +28,11 @@ export default function Drivers() {
           </div>
         </div>
       </div>
+
+      <AddDriverModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
     </div>
   );
 }
