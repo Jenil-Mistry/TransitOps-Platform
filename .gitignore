@@ -25,3 +25,7 @@ dist-ssr
 
 # PDF directory
 pdf/
+
+# Environment variables
+.env
+.env.*
