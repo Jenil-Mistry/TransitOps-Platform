@@ -144,18 +144,6 @@ npm run dev
 ```
 
 ---
-
-## 📸 Screenshots
-
-Add your UI previews here:
-
-```md
-![Dashboard](./preview/dashboard.png)
-![Trips](./preview/trips.png)
-```
-
----
-
 ## 🛡️ Security & Access
 
 - Apply least-privilege role permissions.
