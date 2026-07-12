@@ -1,0 +1,236 @@
+// ─────────────────────────────────────────────────────────
+// TransitOps - Prisma Schema
+// Database: Neon PostgreSQL
+// ─────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════
+
+enum Role {
+  FLEET_MANAGER
+  DISPATCHER
+  SAFETY_OFFICER
+  FINANCIAL_ANALYST
+}
+
+enum VehicleType {
+  VAN
+  TRUCK
+  BUS
+  CAR
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  ON_TRIP
+  IN_SHOP
+  RETIRED
+}
+
+enum DriverStatus {
+  AVAILABLE
+  ON_TRIP
+  OFF_DUTY
+  SUSPENDED
+}
+
+enum TripStatus {
+  DRAFT
+  DISPATCHED
+  COMPLETED
+  CANCELLED
+}
+
+enum MaintenanceStatus {
+  ACTIVE
+  COMPLETED
+}
+
+enum ExpenseCategory {
+  TOLL
+  MAINTENANCE
+  OTHER
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODELS
+// ═══════════════════════════════════════════════════════════
+
+/// Users with role-based access control.
+/// Roles: Fleet Manager, Dispatcher, Safety Officer, Financial Analyst
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  name      String
+  role      Role
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tripsCreated Trip[] @relation("TripCreator")
+
+  @@map("users")
+}
+
+/// Master vehicle registry.
+/// Status transitions:
+///   AVAILABLE ↔ ON_TRIP  (via trip dispatch/complete/cancel)
+///   AVAILABLE → IN_SHOP  (via maintenance creation)
+///   IN_SHOP → AVAILABLE  (via maintenance completion)
+///   Any → RETIRED        (manual, irreversible)
+model Vehicle {
+  id                 String        @id @default(cuid())
+  registrationNumber String        @unique
+  name               String        // Vehicle name / model
+  type               VehicleType
+  maxLoadCapacity    Float         // in kg
+  odometer           Float         @default(0) // current odometer reading in km
+  acquisitionCost    Float         @default(0) // cost of the vehicle
+  region             String?       // optional region for filtering
+  status             VehicleStatus @default(AVAILABLE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trips           Trip[]
+  maintenanceLogs MaintenanceLog[]
+  fuelLogs        FuelLog[]
+  expenses        Expense[]
+
+  @@map("vehicles")
+}
+
+/// Driver profiles with license tracking and safety scoring.
+/// Status transitions:
+///   AVAILABLE ↔ ON_TRIP  (via trip dispatch/complete/cancel)
+///   Any → SUSPENDED      (manual)
+///   Any → OFF_DUTY       (manual)
+model Driver {
+  id              String       @id @default(cuid())
+  name            String
+  licenseNumber   String       @unique
+  licenseCategory String       // e.g. "LMV", "HMV"
+  licenseExpiry   DateTime
+  contactNumber   String
+  safetyScore     Int          @default(100) // 0-100 scale
+  status          DriverStatus @default(AVAILABLE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trips Trip[]
+
+  @@map("drivers")
+}
+
+/// Trip lifecycle: DRAFT → DISPATCHED → COMPLETED | CANCELLED
+/// Business rules enforced at the application layer:
+///   - cargoWeight ≤ vehicle.maxLoadCapacity
+///   - vehicle must be AVAILABLE at dispatch
+///   - driver must be AVAILABLE + valid license at dispatch
+///   - dispatch sets vehicle & driver → ON_TRIP
+///   - complete/cancel restores vehicle & driver → AVAILABLE
+model Trip {
+  id              String     @id @default(cuid())
+  source          String
+  destination     String
+  cargoWeight     Float      // in kg
+  plannedDistance  Float      // in km
+  actualDistance   Float?     // filled on completion
+  fuelConsumed    Float?     // liters, filled on completion
+  status          TripStatus @default(DRAFT)
+
+  dispatchedAt DateTime?
+  completedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+
+  driver   Driver @relation(fields: [driverId], references: [id])
+  driverId String
+
+  createdBy   User   @relation("TripCreator", fields: [createdById], references: [id])
+  createdById String
+
+  @@map("trips")
+}
+
+/// Maintenance records for vehicles.
+/// Creating an ACTIVE record → vehicle.status = IN_SHOP
+/// Completing a record → vehicle.status = AVAILABLE (unless RETIRED)
+model MaintenanceLog {
+  id          String            @id @default(cuid())
+  serviceType String            // e.g. "Oil Change", "Engine Repair", "Tire Replace"
+  description String?
+  cost        Float             @default(0)
+  status      MaintenanceStatus @default(ACTIVE)
+
+  startDate DateTime @default(now())
+  endDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+
+  @@map("maintenance_logs")
+}
+
+/// Fuel consumption logs tied to vehicles.
+/// Auto-created when a trip is completed (with fuelConsumed data),
+/// or manually created by Financial Analyst.
+model FuelLog {
+  id       String   @id @default(cuid())
+  liters   Float
+  cost     Float
+  date     DateTime
+  odometer Float?   // odometer reading at time of fueling
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+
+  @@map("fuel_logs")
+}
+
+/// Other operational expenses (tolls, misc maintenance, etc.)
+/// Category helps break down costs in reports.
+model Expense {
+  id          String          @id @default(cuid())
+  category    ExpenseCategory
+  description String?
+  amount      Float
+  date        DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  vehicleId String
+
+  @@map("expenses")
+}
