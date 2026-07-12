@@ -25,3 +25,12 @@ dist-ssr
 
 # PDF directory
 pdf/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
