@@ -28,12 +28,12 @@ router.get('/', getAllMaintenanceLogs);
 router.get('/:id', getMaintenanceLogById);
 
 // POST /api/maintenance — Fleet Manager logs new maintenance
-router.post('/', authorize('FLEET_MANAGER'), createMaintenanceLog);
+router.post('/', authorize('FLEET_MANAGER', 'FINANCIAL_ANALYST', 'DISPATCHER'), createMaintenanceLog);
 
 // PATCH /api/maintenance/:id/complete — Fleet Manager completes maintenance
-router.patch('/:id/complete', authorize('FLEET_MANAGER'), completeMaintenanceLog);
+router.patch('/:id/complete', authorize('FLEET_MANAGER', 'FINANCIAL_ANALYST', 'DISPATCHER'), completeMaintenanceLog);
 
 // DELETE /api/maintenance/:id — Fleet Manager deletes maintenance record
-router.delete('/:id', authorize('FLEET_MANAGER'), deleteMaintenanceLog);
+router.delete('/:id', authorize('FLEET_MANAGER', 'FINANCIAL_ANALYST'), deleteMaintenanceLog);
 
 module.exports = router;

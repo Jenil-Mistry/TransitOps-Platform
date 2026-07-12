@@ -13,10 +13,11 @@ export default function AddVehicleModal({ isOpen, onClose }: AddVehicleModalProp
 
   const [registrationNumber, setRegistrationNumber] = useState('');
   const [name, setName] = useState('');
-  const [type, setType] = useState('Truck');
+  const [type, setType] = useState('TRUCK');
   const [maxLoadCapacity, setMaxLoadCapacity] = useState('10000');
   const [odometer, setOdometer] = useState('15000');
   const [acquisitionCost, setAcquisitionCost] = useState('50000');
+  const [region, setRegion] = useState('India');
   const [status, setStatus] = useState<VehicleStatus>('Available');
 
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,7 @@ export default function AddVehicleModal({ isOpen, onClose }: AddVehicleModalProp
         maxLoadCapacity: Number(maxLoadCapacity),
         odometer: Number(odometer),
         acquisitionCost: Number(acquisitionCost),
+        region,
         status,
       });
       // Reset form
@@ -122,11 +124,11 @@ export default function AddVehicleModal({ isOpen, onClose }: AddVehicleModalProp
                 onChange={(e) => setType(e.target.value)}
                 className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
               >
-                <option value="Truck">Truck</option>
-                <option value="Van">Van</option>
-                <option value="Refrigerated Truck">Refrigerated Truck</option>
-                <option value="Flatbed Trailer">Flatbed Trailer</option>
-                <option value="Tanker">Tanker</option>
+                <option value="TRUCK">TRUCK</option>
+                <option value="VAN">VAN</option>
+                <option value="BUS">BUS</option>
+                <option value="CAR">CAR</option>
+                <option value="BIKE">BIKE</option>
               </select>
             </div>
 
@@ -162,7 +164,7 @@ export default function AddVehicleModal({ isOpen, onClose }: AddVehicleModalProp
 
             <div>
               <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
-                Acquisition Cost ($) *
+                Acquisition Cost (₹) *
               </label>
               <input
                 type="number"
@@ -173,6 +175,23 @@ export default function AddVehicleModal({ isOpen, onClose }: AddVehicleModalProp
                 required
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              Region (Default: India)
+            </label>
+            <select
+              value={region}
+              onChange={(e) => setRegion(e.target.value)}
+              className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+            >
+              <option value="India">India</option>
+              <option value="North India">North India</option>
+              <option value="South India">South India</option>
+              <option value="West India">West India</option>
+              <option value="East India">East India</option>
+            </select>
           </div>
 
           <div>

@@ -1,11 +1,15 @@
-
+import { useState } from 'react';
 import { useMaintenanceStore } from '../store/useMaintenanceStore';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { Plus } from 'lucide-react';
+import ScheduleMaintenanceModal from '../components/Modals/ScheduleMaintenanceModal';
 
 export default function Maintenance() {
   const { logs, updateLogStatus } = useMaintenanceStore();
   const { vehicles } = useVehicleStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -15,18 +19,56 @@ export default function Maintenance() {
     }
   };
 
+  const filteredLogs = logs.filter((log) => {
+    const v = vehicles.find((v) => v.id === log.vehicleId);
+    const regNum = v?.registrationNumber || '';
+    const vehicleName = v?.name || '';
+
+    // Status filter
+    if (statusFilter !== 'All' && log.status !== statusFilter) {
+      return false;
+    }
+
+    // Search filter
+    if (
+      searchTerm &&
+      !regNum.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !(log.description || '').toLowerCase().includes(searchTerm.toLowerCase())
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
   return (
     <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col">
-      <div className="flex justify-between items-center bg-white p-6 rounded-[24px] border border-[#ECECEC] card-shadow">
-        <div className="flex space-x-4 items-center">
-          <select className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl px-4 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all">
-            <option>Status: All</option>
+      <div className="flex flex-wrap justify-between items-center bg-white p-6 rounded-[24px] border border-[#ECECEC] card-shadow gap-4">
+        <div className="flex flex-wrap space-x-3 items-center gap-y-2">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl px-4 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all"
+          >
+            <option value="All">Status: All</option>
+            <option value="Open">Status: Open</option>
+            <option value="Closed">Status: Closed</option>
           </select>
           <div className="relative">
-             <input type="text" placeholder="Search vehicle..." className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl pl-4 pr-10 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all placeholder-[#9CA3AF]" />
+             <input
+              type="text"
+              placeholder="Search vehicle or description..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl pl-4 pr-10 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all placeholder-[#9CA3AF]"
+            />
           </div>
         </div>
-        <button className="flex items-center px-6 h-12 bg-[#0C0D0D] text-white font-semibold text-sm rounded-2xl hover:scale-[1.02] transition-all duration-200">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="flex items-center px-6 h-12 bg-[#0C0D0D] text-white font-semibold text-sm rounded-2xl hover:scale-[1.02] transition-all duration-200"
+        >
           <Plus className="w-4 h-4 mr-2" /> Schedule Maintenance
         </button>
       </div>
@@ -45,14 +87,14 @@ export default function Maintenance() {
               </tr>
             </thead>
             <tbody className="text-[#111111]">
-              {logs.map((log) => {
+              {filteredLogs.map((log) => {
                 const v = vehicles.find(v => v.id === log.vehicleId);
                 return (
                   <tr key={log.id} className="border-b border-[#ECECEC] last:border-0 hover:bg-neutral-50 transition-colors">
                     <td className="py-4 text-[#6B7280]">{new Date(log.date).toLocaleDateString()}</td>
                     <td className="py-4 font-semibold">{v?.registrationNumber || log.vehicleId}</td>
                     <td className="py-4 text-[#6B7280]">{log.description}</td>
-                    <td className="py-4 text-[#6B7280]">${log.cost.toLocaleString()}</td>
+                    <td className="py-4 text-[#6B7280]">₹{log.cost.toLocaleString()}</td>
                     <td className="py-4">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusColor(log.status)}`}>
                         {log.status}
@@ -73,6 +115,13 @@ export default function Maintenance() {
                   </tr>
                 );
               })}
+              {filteredLogs.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-xs text-[#9CA3AF]">
+                    No maintenance logs found matching criteria.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -87,6 +136,11 @@ export default function Maintenance() {
           </div>
         </div>
       </div>
+
+      <ScheduleMaintenanceModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

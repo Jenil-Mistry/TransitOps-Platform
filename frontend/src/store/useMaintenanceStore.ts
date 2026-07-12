@@ -44,11 +44,24 @@ export const useMaintenanceStore = create<MaintenanceState>((set, get) => ({
   updateLogStatus: async (id, status) => {
     try {
       if (status === 'Closed') {
+        // Find log to get vehicleId before updating
+        const targetLog = get().logs.find(m => m.id === id);
+        
+        // Optimistic update locally first so UI responds instantly
+        set((state) => ({
+          logs: state.logs.map(m => m.id === id ? { ...m, status: 'Closed' } : m)
+        }));
+        if (targetLog) {
+          useVehicleStore.setState((vState) => ({
+            vehicles: vState.vehicles.map(v => v.id === targetLog.vehicleId ? { ...v, status: 'Available' } : v)
+          }));
+        }
+
         const completed = await maintenanceApi.complete(id);
         set((state) => ({
           logs: state.logs.map(m => m.id === id ? completed : m)
         }));
-        // Re-sync vehicle status (backend switches vehicle back to AVAILABLE when completed)
+        // Re-sync vehicle status with backend
         await useVehicleStore.getState().fetchVehicles();
       } else {
         set((state) => ({
@@ -58,6 +71,7 @@ export const useMaintenanceStore = create<MaintenanceState>((set, get) => ({
     } catch (err) {
       console.error('Failed to update maintenance status on backend API:', err);
       await get().fetchLogs();
+      await useVehicleStore.getState().fetchVehicles();
       throw err;
     }
   },

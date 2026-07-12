@@ -5,27 +5,17 @@ import type { SidebarNavigationItemProps } from './SidebarNavigationItem';
 import { useAuthStore } from '../../store/useAuthStore';
 import type { Role } from '../../types';
 
-// Full list of all possible nav items
+// All possible navigation items with role access lists
 const allNavItems: (SidebarNavigationItemProps & { roles: Role[] })[] = [
   // Dashboard — shared among ALL roles
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['Fleet Manager', 'Driver', 'Safety Officer', 'Financial Analyst'] },
 
-  // Fleet Manager: fleet assets, maintenance, vehicle lifecycle
-  { name: 'Fleet', path: '/vehicles', icon: Truck, roles: ['Fleet Manager'] },
-  { name: 'Maintenance', path: '/maintenance', icon: PenTool, roles: ['Fleet Manager'] },
-
-  // Driver (Dispatcher): creates trips, assigns vehicles/drivers
-  { name: 'Trips', path: '/trips', icon: Route, roles: ['Driver'] },
-  { name: 'Fleet', path: '/vehicles', icon: Truck, roles: ['Driver'] },
-  { name: 'Drivers', path: '/drivers', icon: Users, roles: ['Driver'] },
-
-  // Safety Officer: driver compliance, license validity, safety scores
-  { name: 'Drivers', path: '/drivers', icon: Users, roles: ['Safety Officer'] },
-  { name: 'Trips', path: '/trips', icon: Route, roles: ['Safety Officer'] },
-
-  // Financial Analyst: expenses, fuel consumption, maintenance costs
-  { name: 'Fuel & Expenses', path: '/expenses', icon: ReceiptText, roles: ['Financial Analyst'] },
-  { name: 'Maintenance', path: '/maintenance', icon: PenTool, roles: ['Financial Analyst'] },
+  // Fleet Manager (admin) sees everything — included in every item below
+  { name: 'Fleet', path: '/vehicles', icon: Truck, roles: ['Fleet Manager', 'Driver'] },
+  { name: 'Drivers', path: '/drivers', icon: Users, roles: ['Fleet Manager', 'Driver', 'Safety Officer'] },
+  { name: 'Trips', path: '/trips', icon: Route, roles: ['Fleet Manager', 'Driver', 'Safety Officer'] },
+  { name: 'Maintenance', path: '/maintenance', icon: PenTool, roles: ['Fleet Manager', 'Financial Analyst'] },
+  { name: 'Fuel & Expenses', path: '/expenses', icon: ReceiptText, roles: ['Fleet Manager', 'Financial Analyst'] },
 ];
 
 export default function Sidebar() {

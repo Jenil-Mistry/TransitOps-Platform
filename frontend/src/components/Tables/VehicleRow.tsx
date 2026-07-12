@@ -15,7 +15,7 @@ export default function VehicleRow({ vehicle }: VehicleRowProps) {
       <TableCell className="text-[#6B7280]">{vehicle.type}</TableCell>
       <TableCell className="text-[#6B7280]">{vehicle.maxLoadCapacity} kg</TableCell>
       <TableCell className="text-[#6B7280]">{vehicle.odometer.toLocaleString()} km</TableCell>
-      <TableCell className="text-[#6B7280]">${vehicle.acquisitionCost.toLocaleString()}</TableCell>
+      <TableCell className="text-[#6B7280]">₹{vehicle.acquisitionCost.toLocaleString()}</TableCell>
       <TableCell>
         <VehicleStatusBadge status={vehicle.status} />
       </TableCell>

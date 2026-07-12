@@ -28,7 +28,7 @@ router.get('/', getAllFuelLogs);
 router.get('/:id', getFuelLogById);
 
 // POST /api/fuel — Financial Analyst & Fleet Manager can log fuel
-router.post('/', authorize('FINANCIAL_ANALYST', 'FLEET_MANAGER'), createFuelLog);
+router.post('/', authorize('FINANCIAL_ANALYST', 'FLEET_MANAGER', 'DISPATCHER'), createFuelLog);
 
 // PUT /api/fuel/:id — Financial Analyst & Fleet Manager can update
 router.put('/:id', authorize('FINANCIAL_ANALYST', 'FLEET_MANAGER'), updateFuelLog);
