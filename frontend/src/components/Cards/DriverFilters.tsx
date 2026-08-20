@@ -20,7 +20,7 @@ export default function DriverFilters({
       <select
         value={classFilter}
         onChange={(e) => setClassFilter(e.target.value)}
-        className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-xs font-semibold rounded-2xl px-3.5 h-11 focus:outline-none focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+        className="border border-[var(--color-3)] bg-[var(--color-6)] text-[var(--color-1)] text-xs font-semibold rounded-[var(--radius-sm)] px-3.5 h-11 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
       >
         <option value="All">License Class: All</option>
         <option value="Class A">Class A</option>
@@ -33,7 +33,7 @@ export default function DriverFilters({
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-xs font-semibold rounded-2xl px-3.5 h-11 focus:outline-none focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+        className="border border-[var(--color-3)] bg-[var(--color-6)] text-[var(--color-1)] text-xs font-semibold rounded-[var(--radius-sm)] px-3.5 h-11 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
       >
         <option value="All">Status: All</option>
         <option value="Available">Available</option>
@@ -48,7 +48,7 @@ export default function DriverFilters({
           placeholder="Search driver name or license..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-xs font-semibold rounded-2xl pl-3.5 pr-10 h-11 focus:outline-none focus:ring-2 focus:ring-[#0C0D0D] transition-all placeholder-[#9CA3AF]"
+          className="border border-[var(--color-3)] bg-[var(--color-6)] text-[var(--color-1)] text-xs font-semibold rounded-[var(--radius-sm)] pl-3.5 pr-10 h-11 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all placeholder-[var(--color-text-disabled)]"
         />
       </div>
     </div>

@@ -1,35 +1,42 @@
-import { NavLink } from 'react-router-dom';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import type { ElementType } from 'react';
-
-const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
+import { useLocation, Link } from 'react-router-dom';
+import { clsx } from 'clsx';
+import type { LucideIcon } from 'lucide-react';
 
 export interface SidebarNavigationItemProps {
   name: string;
   path: string;
-  icon: ElementType;
+  icon: LucideIcon;
 }
 
 export default function SidebarNavigationItem({ name, path, icon: Icon }: SidebarNavigationItemProps) {
+  const { pathname } = useLocation();
+  const isActive = pathname === path;
+
   return (
-    <NavLink
+    <Link
       to={path}
-      className={({ isActive }) =>
-        cn(
-          'flex md:flex-row flex-col items-center md:justify-start justify-center px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out',
-          isActive
-            ? 'bg-[#0C0D0D] text-white shadow-sm'
-            : 'text-[#6B7280] hover:bg-[#FAFAFA] hover:text-[#111111]'
-        )
-      }
-    >
-      {({ isActive }) => (
-        <>
-          <Icon className={cn("w-5 h-5 md:mr-3", "mb-1 md:mb-0")} strokeWidth={isActive ? 2.5 : 2} />
-          <span className="text-[10px] md:text-sm font-medium">{name}</span>
-        </>
+      className={clsx(
+        'group flex items-center gap-3 px-3 py-2.5 mx-3 rounded-[var(--radius-sm)] text-[14px] font-medium transition-all duration-[150ms] relative',
+        isActive
+          ? 'bg-[var(--color-5)] text-[var(--color-1)] font-bold border border-[var(--color-4)]'
+          : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-5)] hover:text-[var(--color-1)]'
       )}
-    </NavLink>
+    >
+      {/* Active indicator bar */}
+      {isActive && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--color-2)] rounded-r-full" />
+      )}
+
+      <Icon
+        className={clsx(
+          'w-[18px] h-[18px] flex-shrink-0 transition-colors duration-[150ms]',
+          isActive
+            ? 'text-[var(--color-2)]'
+            : 'text-[var(--color-text-muted)] group-hover:text-[var(--color-1)]'
+        )}
+      />
+
+      <span className="hidden md:inline truncate">{name}</span>
+    </Link>
   );
 }

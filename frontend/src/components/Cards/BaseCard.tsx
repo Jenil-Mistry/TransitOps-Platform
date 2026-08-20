@@ -26,10 +26,10 @@ export default function BaseCard({
   const hasHeader = title || actions;
 
   return (
-    <div className={cn("bg-white rounded-[24px] border border-[#ECECEC] card-shadow flex flex-col", className)}>
+    <div className={cn("bg-white rounded-[24px] border border-[var(--color-3)]  flex flex-col", className)}>
       {hasHeader && (
         <div className="flex justify-between items-center px-6 pt-6 mb-4">
-          {title && (typeof title === 'string' ? <h3 className="text-sm font-bold text-[#111111] tracking-tight m-0">{title}</h3> : title)}
+          {title && (typeof title === 'string' ? <h3 className="text-sm font-bold text-[var(--color-1)] tracking-tight m-0">{title}</h3> : title)}
           {actions && <div>{actions}</div>}
         </div>
       )}
@@ -37,7 +37,7 @@ export default function BaseCard({
         {children}
       </div>
       {footer && (
-        <div className="border-t border-[#ECECEC] p-6">
+        <div className="border-t border-[var(--color-3)] p-6">
           {footer}
         </div>
       )}

@@ -3,14 +3,15 @@ import { Search } from 'lucide-react';
 export default function SearchBar() {
   return (
     <div className="relative w-full">
-      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-        <Search className="h-5 w-5 text-[#9CA3AF]" />
-      </div>
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
       <input
         type="text"
-        className="block w-full pl-12 pr-4 h-12 border border-[#ECECEC] rounded-2xl bg-[#FAFAFA] text-[#111111] text-sm placeholder-[#9CA3AF] focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all duration-200"
-        placeholder="Search for driver, vehicle, trip..."
+        placeholder="Search vehicles, drivers, trips..."
+        className="w-full h-9 pl-9 pr-16 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-[var(--radius-sm)] text-[13px] text-[var(--color-text-primary)] placeholder-[var(--color-text-disabled)] focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]/20 focus:border-[var(--color-brand)] transition-all"
       />
+      <kbd className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-[var(--color-bg-primary)] border border-[var(--color-border)] rounded-[4px] text-[10px] font-medium text-[var(--color-text-muted)]">
+        ⌘K
+      </kbd>
     </div>
   );
 }

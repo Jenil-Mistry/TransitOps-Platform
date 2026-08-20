@@ -8,7 +8,7 @@ export interface TableHeaderProps {
 export default function TableHeader({ children, className = '' }: TableHeaderProps) {
   return (
     <thead className={className}>
-      <tr className="text-[#6B7280] border-b border-[#ECECEC]">
+      <tr className="text-[var(--color-text-muted)] border-b border-[var(--color-3)]">
         {children}
       </tr>
     </thead>

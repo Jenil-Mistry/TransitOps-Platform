@@ -8,24 +8,24 @@ export default function StatusBadge({ status, className = '' }: StatusBadgeProps
   switch (status) {
     case 'Available':
     case 'Completed':
-      style = 'bg-[#16A34A] text-white';
+      style = 'bg-[var(--color-1)] text-white';
       break;
     case 'On Trip':
     case 'Dispatched':
-      style = 'bg-[#FAFAFA] border border-[#ECECEC] text-[#111111]';
+      style = 'bg-[var(--color-6)] border border-[var(--color-3)] text-[var(--color-1)]';
       break;
     case 'In Shop':
-      style = 'bg-[#F59E0B] text-white';
+      style = 'bg-[var(--color-2)] text-white';
       break;
     case 'Retired':
     case 'Draft':
-      style = 'bg-[#FAFAFA] border border-[#ECECEC] text-[#6B7280]';
+      style = 'bg-[var(--color-6)] border border-[var(--color-3)] text-[var(--color-text-muted)]';
       break;
     case 'Cancelled':
-      style = 'bg-[#DC2626] text-white';
+      style = 'bg-[var(--color-1)] text-white';
       break;
     default:
-      style = 'bg-[#DC2626] text-white';
+      style = 'bg-[var(--color-1)] text-white';
   }
 
   return (

@@ -18,16 +18,16 @@ export default function DashboardFilters({
   setRegionFilter,
 }: DashboardFiltersProps) {
   return (
-    <div className="flex flex-wrap gap-3 mb-4 items-center bg-white p-4 rounded-2xl border border-[#ECECEC] card-shadow">
-      <span className="text-xs font-bold text-[#6B7280] uppercase flex items-center tracking-wider mr-2">
-        <Filter className="w-4 h-4 mr-1 text-[#0C0D0D]" /> Dashboard Filters
+    <div className="flex flex-wrap gap-3 mb-4 items-center bg-white p-4 rounded-[var(--radius-sm)] border border-[var(--color-3)] ">
+      <span className="text-xs font-bold text-[var(--color-text-muted)] uppercase flex items-center tracking-wider mr-2">
+        <Filter className="w-4 h-4 mr-1 text-[var(--color-1)]" /> Dashboard Filters
       </span>
 
       {/* Vehicle Type Filter */}
       <select
         value={typeFilter}
         onChange={(e) => setTypeFilter(e.target.value)}
-        className="border-[#ECECEC] bg-[#FAFAFA] text-[#111111] border text-xs font-semibold rounded-xl px-3 py-2 h-10 focus:ring-1 focus:ring-[#0C0D0D] transition-all"
+        className="border-[var(--color-3)] bg-[var(--color-6)] text-[var(--color-1)] border text-xs font-semibold rounded-[var(--radius-sm)] px-3 py-2 h-10 focus:ring-1 focus:ring-[var(--color-brand)]/20 transition-all"
       >
         <option value="All">Vehicle Type: All</option>
         <option value="TRUCK">TRUCK</option>
@@ -41,7 +41,7 @@ export default function DashboardFilters({
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="border-[#ECECEC] bg-[#FAFAFA] text-[#111111] border text-xs font-semibold rounded-xl px-3 py-2 h-10 focus:ring-1 focus:ring-[#0C0D0D] transition-all"
+        className="border-[var(--color-3)] bg-[var(--color-6)] text-[var(--color-1)] border text-xs font-semibold rounded-[var(--radius-sm)] px-3 py-2 h-10 focus:ring-1 focus:ring-[var(--color-brand)]/20 transition-all"
       >
         <option value="All">Status: All</option>
         <option value="Available">Available</option>
@@ -54,7 +54,7 @@ export default function DashboardFilters({
       <select
         value={regionFilter}
         onChange={(e) => setRegionFilter(e.target.value)}
-        className="border-[#ECECEC] bg-[#FAFAFA] text-[#111111] border text-xs font-semibold rounded-xl px-3 py-2 h-10 focus:ring-1 focus:ring-[#0C0D0D] transition-all"
+        className="border-[var(--color-3)] bg-[var(--color-6)] text-[var(--color-1)] border text-xs font-semibold rounded-[var(--radius-sm)] px-3 py-2 h-10 focus:ring-1 focus:ring-[var(--color-brand)]/20 transition-all"
       >
         <option value="India">Region: India (Default)</option>
         <option value="All">Region: All Regions</option>

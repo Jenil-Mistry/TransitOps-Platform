@@ -22,10 +22,10 @@ export default function TripCard({ trip }: TripCardProps) {
 
   const getStatusStyle = (status: TripStatus) => {
     switch (status) {
-      case 'Draft': return 'bg-[#FAFAFA] border border-[#ECECEC] text-[#6B7280]';
-      case 'Dispatched': return 'bg-[#FAFAFA] border border-[#ECECEC] text-[#111111]';
-      case 'Completed': return 'bg-[#16A34A] text-white';
-      case 'Cancelled': return 'bg-[#DC2626] text-white';
+      case 'Draft': return 'bg-[var(--color-6)] border border-[var(--color-3)] text-[var(--color-text-muted)]';
+      case 'Dispatched': return 'bg-[var(--color-6)] border border-[var(--color-3)] text-[var(--color-1)]';
+      case 'Completed': return 'bg-[var(--color-1)] text-white';
+      case 'Cancelled': return 'bg-[var(--color-1)] text-white';
     }
   };
 
@@ -49,23 +49,23 @@ export default function TripCard({ trip }: TripCardProps) {
   };
 
   return (
-    <div className="border border-[#ECECEC] rounded-2xl p-5 hover:border-[#111111]/20 transition-all bg-white">
+    <div className="border border-[var(--color-3)] rounded-[var(--radius-sm)] p-5 hover:border-[var(--color-1)]/20 transition-all bg-white">
       <div className="flex justify-between items-start mb-4">
         <div>
           <div className="flex items-center space-x-3 mb-1">
-            <span className="font-bold text-[#111111]">TRIP-{trip.id.substring(0, 8).toUpperCase()}</span>
+            <span className="font-bold text-[var(--color-1)]">TRIP-{trip.id.substring(0, 8).toUpperCase()}</span>
             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusStyle(trip.status)}`}>
               {trip.status}
             </span>
           </div>
-          <div className="text-xs text-[#6B7280] font-medium">Created: {new Date(trip.createdAt).toLocaleString()}</div>
+          <div className="text-xs text-[var(--color-text-muted)] font-medium">Created: {new Date(trip.createdAt).toLocaleString()}</div>
         </div>
 
         <div className="flex items-center space-x-2">
           {trip.status === 'Draft' && (
             <button 
               onClick={handleDispatch}
-              className="px-4 py-2 bg-[#0C0D0D] text-white text-xs font-semibold rounded-xl hover:scale-105 transition-all"
+              className="px-4 py-2 bg-[var(--color-1)] text-white text-xs font-semibold rounded-[var(--radius-sm)] hover:scale-105 transition-all"
             >
               Dispatch Trip
             </button>
@@ -75,13 +75,13 @@ export default function TripCard({ trip }: TripCardProps) {
             <>
               <button 
                 onClick={() => setCompleting(true)}
-                className="px-4 py-2 bg-[#16A34A] text-white text-xs font-semibold rounded-xl hover:bg-[#15803d] transition-colors"
+                className="px-4 py-2 bg-[var(--color-1)] text-white text-xs font-semibold rounded-[var(--radius-sm)] hover:bg-[var(--color-success-soft)] text-[var(--color-success)] transition-colors"
               >
                 Mark Completed
               </button>
               <button 
                 onClick={handleCancel}
-                className="px-3 py-2 bg-red-50 text-red-600 border border-red-200 text-xs font-semibold rounded-xl hover:bg-red-100 transition-colors"
+                className="px-3 py-2 bg-[var(--color-danger-soft)] text-red-600 border border-[var(--color-danger)] text-xs font-semibold rounded-[var(--radius-sm)] hover:bg-red-100 transition-colors"
               >
                 Cancel
               </button>
@@ -91,26 +91,26 @@ export default function TripCard({ trip }: TripCardProps) {
       </div>
 
       {completing && (
-        <form onSubmit={handleCompleteSubmit} className="mb-4 bg-[#FAFAFA] border border-[#ECECEC] p-4 rounded-xl space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#111111]">Complete Trip Details</div>
+        <form onSubmit={handleCompleteSubmit} className="mb-4 bg-[var(--color-6)] border border-[var(--color-3)] p-4 rounded-[var(--radius-sm)] space-y-3">
+          <div className="text-xs font-bold uppercase tracking-wider text-[var(--color-1)]">Complete Trip Details</div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] font-semibold text-[#6B7280] mb-1 uppercase">Fuel Consumed (Liters)</label>
+              <label className="block text-[10px] font-semibold text-[var(--color-text-muted)] mb-1 uppercase">Fuel Consumed (Liters)</label>
               <input 
                 type="number" 
                 value={fuelConsumed} 
                 onChange={e => setFuelConsumed(Number(e.target.value))}
-                className="w-full h-9 px-3 bg-white border border-[#ECECEC] rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-[#0C0D0D]"
+                className="w-full h-9 px-3 bg-white border border-[var(--color-3)] rounded-[var(--radius-sm)] text-xs focus:outline-none focus:ring-1 focus:ring-[var(--color-brand)]/20"
                 required
               />
             </div>
             <div>
-              <label className="block text-[10px] font-semibold text-[#6B7280] mb-1 uppercase">Final Odometer (km)</label>
+              <label className="block text-[10px] font-semibold text-[var(--color-text-muted)] mb-1 uppercase">Final Odometer (km)</label>
               <input 
                 type="number" 
                 value={finalOdometer} 
                 onChange={e => setFinalOdometer(Number(e.target.value))}
-                className="w-full h-9 px-3 bg-white border border-[#ECECEC] rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-[#0C0D0D]"
+                className="w-full h-9 px-3 bg-white border border-[var(--color-3)] rounded-[var(--radius-sm)] text-xs focus:outline-none focus:ring-1 focus:ring-[var(--color-brand)]/20"
                 required
               />
             </div>
@@ -119,13 +119,13 @@ export default function TripCard({ trip }: TripCardProps) {
             <button 
               type="button" 
               onClick={() => setCompleting(false)}
-              className="px-3 py-1.5 bg-white border border-[#ECECEC] text-[#6B7280] text-xs font-semibold rounded-lg hover:bg-[#FAFAFA]"
+              className="px-3 py-1.5 bg-white border border-[var(--color-3)] text-[var(--color-text-muted)] text-xs font-semibold rounded-lg hover:bg-[var(--color-6)]"
             >
               Cancel
             </button>
             <button 
               type="submit" 
-              className="px-3 py-1.5 bg-[#0C0D0D] text-white text-xs font-semibold rounded-lg hover:scale-105 transition-all"
+              className="px-3 py-1.5 bg-[var(--color-1)] text-white text-xs font-semibold rounded-lg hover:scale-105 transition-all"
             >
               Submit & Complete
             </button>
@@ -133,25 +133,25 @@ export default function TripCard({ trip }: TripCardProps) {
         </form>
       )}
 
-      <div className="grid grid-cols-2 gap-4 mb-4 bg-[#FAFAFA] p-4 rounded-xl border border-[#ECECEC]">
+      <div className="grid grid-cols-2 gap-4 mb-4 bg-[var(--color-6)] p-4 rounded-[var(--radius-sm)] border border-[var(--color-3)]">
         <div>
-          <div className="text-[10px] uppercase font-bold text-[#9CA3AF] mb-1">Route</div>
-          <div className="text-sm font-semibold text-[#111111]">{trip.source} <span className="mx-2 text-[#9CA3AF]">→</span> {trip.destination}</div>
-          <div className="text-xs text-[#6B7280] mt-1">{trip.plannedDistance} km</div>
+          <div className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] mb-1">Route</div>
+          <div className="text-sm font-semibold text-[var(--color-1)]">{trip.source} <span className="mx-2 text-[var(--color-text-muted)]">→</span> {trip.destination}</div>
+          <div className="text-xs text-[var(--color-text-muted)] mt-1">{trip.plannedDistance} km</div>
         </div>
         <div>
-          <div className="text-[10px] uppercase font-bold text-[#9CA3AF] mb-1">Details</div>
-          <div className="text-sm text-[#111111]">
+          <div className="text-[10px] uppercase font-bold text-[var(--color-text-muted)] mb-1">Details</div>
+          <div className="text-sm text-[var(--color-1)]">
             <span className="font-medium">Vehicle:</span> {v?.registrationNumber || trip.vehicleId}
           </div>
-          <div className="text-sm text-[#111111]">
+          <div className="text-sm text-[var(--color-1)]">
             <span className="font-medium">Driver:</span> {d?.name || trip.driverId}
           </div>
         </div>
       </div>
 
       {trip.status === 'Completed' && trip.completedAt && (
-        <div className="text-xs text-[#16A34A] font-semibold bg-[#16A34A]/10 p-3 rounded-xl flex justify-between items-center">
+        <div className="text-xs text-[var(--color-1)] font-semibold bg-[var(--color-1)]/10 p-3 rounded-[var(--radius-sm)] flex justify-between items-center">
           <span>Completed at: {new Date(trip.completedAt).toLocaleString()}</span>
           {trip.fuelConsumed && <span>Fuel Used: {trip.fuelConsumed} L</span>}
         </div>

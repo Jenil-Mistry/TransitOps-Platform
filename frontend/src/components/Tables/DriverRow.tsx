@@ -12,10 +12,10 @@ export default function DriverRow({ driver }: DriverRowProps) {
   return (
     <TableRow>
       <TableCell className="font-semibold">{driver.name}</TableCell>
-      <TableCell className="text-[#6B7280]">{driver.licenseNumber}</TableCell>
-      <TableCell className="text-[#6B7280]">{driver.licenseCategory}</TableCell>
-      <TableCell className="text-[#6B7280]">{driver.licenseExpiryDate}</TableCell>
-      <TableCell className="text-[#6B7280]">{driver.contactNumber}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{driver.licenseNumber}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{driver.licenseCategory}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{driver.licenseExpiryDate}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{driver.contactNumber}</TableCell>
       <TableCell>
         <SafetyScore score={driver.safetyScore} />
       </TableCell>

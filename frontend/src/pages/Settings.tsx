@@ -1,60 +1,90 @@
-import { useState } from 'react';
-import { Check } from 'lucide-react';
+import { Bell, Shield, Palette } from 'lucide-react';
+import Button from '../components/ui/Button';
+
+const settingsSections = [
+  {
+    title: 'Notifications',
+    description: 'Configure how and when you receive notifications.',
+    icon: Bell,
+    settings: [
+      { label: 'Email notifications', description: 'Receive trip and maintenance updates via email', enabled: true },
+      { label: 'Push notifications', description: 'Browser push notifications for critical alerts', enabled: true },
+      { label: 'SMS alerts', description: 'Get SMS alerts for overdue maintenance', enabled: false },
+    ],
+  },
+  {
+    title: 'Security',
+    description: 'Manage your account security settings.',
+    icon: Shield,
+    settings: [
+      { label: 'Two-factor authentication', description: 'Add an extra layer of security to your account', enabled: false },
+      { label: 'Session timeout', description: 'Auto-logout after 30 minutes of inactivity', enabled: true },
+    ],
+  },
+  {
+    title: 'Preferences',
+    description: 'Customize your workspace experience.',
+    icon: Palette,
+    settings: [
+      { label: 'Dark mode', description: 'Switch to dark theme (coming soon)', enabled: false },
+      { label: 'Compact tables', description: 'Reduce row height in data tables', enabled: false },
+    ],
+  },
+];
 
 export default function Settings() {
-  const [depotName, setDepotName] = useState('Gandhinagar Depot GJN');
-  const [currency, setCurrency] = useState('INR (Rs)');
-  const [distanceUnit, setDistanceUnit] = useState('Kilometers (km)');
-  const [emailAlerts, setEmailAlerts] = useState(true);
-
   return (
-    <div className="max-w-3xl space-y-6">
-      <div className="bg-white rounded-[24px] p-8 border border-[#ECECEC] card-shadow">
-        <h2 className="text-xl font-bold text-[#111111] mb-6 tracking-tight">General Settings</h2>
-        
-        <div className="space-y-5">
-          <div>
-            <label className="block text-xs font-semibold text-[#111111] mb-2 uppercase tracking-wide">Depot Name / Org Name</label>
-            <input type="text" value={depotName} onChange={e => setDepotName(e.target.value)} className="w-full h-12 px-4 bg-white border border-[#ECECEC] rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all placeholder-[#9CA3AF]" />
-          </div>
+    <div className="space-y-6 max-w-3xl">
+      {/* Header */}
+      <div>
+        <h1 className="text-page-title">Settings</h1>
+        <p className="text-page-subtitle mt-1">Application preferences and configuration.</p>
+      </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-xs font-semibold text-[#111111] mb-2 uppercase tracking-wide">Currency</label>
-              <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full h-12 px-4 bg-white border border-[#ECECEC] rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all">
-                <option>INR (Rs)</option>
-                <option>USD ($)</option>
-                <option>EUR (€)</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-[#111111] mb-2 uppercase tracking-wide">Distance Unit</label>
-              <select value={distanceUnit} onChange={e => setDistanceUnit(e.target.value)} className="w-full h-12 px-4 bg-white border border-[#ECECEC] rounded-2xl text-sm focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all">
-                <option>Kilometers (km)</option>
-                <option>Miles (mi)</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="pt-6 border-t border-[#ECECEC]">
-            <h3 className="text-sm font-bold text-[#111111] mb-4 tracking-tight">Notifications</h3>
-            <label className="flex items-center space-x-3 cursor-pointer">
-              <div 
-                onClick={() => setEmailAlerts(!emailAlerts)}
-                className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${emailAlerts ? 'bg-[#0C0D0D] border-[#0C0D0D]' : 'border-[#ECECEC] bg-white'}`}
-              >
-                {emailAlerts && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+      {/* Settings sections */}
+      {settingsSections.map(section => {
+        const Icon = section.icon;
+        return (
+          <div key={section.title} className="card overflow-hidden">
+            <div className="px-6 py-4 border-b border-[var(--color-border)] flex items-center gap-3">
+              <div className="w-9 h-9 rounded-[var(--radius-sm)] bg-[var(--color-brand-soft)] flex items-center justify-center text-[var(--color-brand)]">
+                <Icon className="w-[18px] h-[18px]" />
               </div>
-              <span className="text-sm text-[#111111] font-medium">Enable Email Alerts for Trip Completions</span>
-            </label>
-          </div>
+              <div>
+                <h2 className="text-[15px] font-semibold text-[var(--color-text-primary)]">{section.title}</h2>
+                <p className="text-[12px] text-[var(--color-text-muted)]">{section.description}</p>
+              </div>
+            </div>
 
-          <div className="pt-6">
-            <button className="h-12 px-8 bg-[#0C0D0D] text-white font-semibold text-sm rounded-2xl hover:scale-[1.02] transition-all duration-200">
-              Save Settings
-            </button>
+            <div className="divide-y divide-[var(--color-border)]">
+              {section.settings.map(setting => (
+                <div key={setting.label} className="px-6 py-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{setting.label}</p>
+                    <p className="text-[12px] text-[var(--color-text-muted)] mt-0.5">{setting.description}</p>
+                  </div>
+                  {/* Toggle switch */}
+                  <button
+                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
+                      setting.enabled ? 'bg-[var(--color-brand)]' : 'bg-[var(--color-border-strong)]'
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-4 h-4 rounded-full bg-white  transition-transform ${
+                        setting.enabled ? 'left-[22px]' : 'left-0.5'
+                      }`}
+                    />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        );
+      })}
+
+      {/* Save */}
+      <div className="flex justify-end">
+        <Button variant="primary">Save Changes</Button>
       </div>
     </div>
   );

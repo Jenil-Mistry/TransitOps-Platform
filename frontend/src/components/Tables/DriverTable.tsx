@@ -20,7 +20,7 @@ export default function DriverTable({ drivers }: DriverTableProps) {
         <TableCell isHeader className="pb-4 uppercase text-[10px] tracking-wider">Safety Score</TableCell>
         <TableCell isHeader className="pb-4 uppercase text-[10px] tracking-wider">Status</TableCell>
       </TableHeader>
-      <tbody className="text-[#111111]">
+      <tbody className="text-[var(--color-1)]">
         {drivers.map(d => (
           <DriverRow key={d.id} driver={d} />
         ))}

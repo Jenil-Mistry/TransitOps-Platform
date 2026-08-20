@@ -20,7 +20,7 @@ export default function VehicleTable({ vehicles }: VehicleTableProps) {
         <TableCell isHeader className="pb-4 uppercase text-[10px] tracking-wider">Acq. Cost</TableCell>
         <TableCell isHeader className="pb-4 uppercase text-[10px] tracking-wider">Status</TableCell>
       </TableHeader>
-      <tbody className="text-[#111111]">
+      <tbody className="text-[var(--color-1)]">
         {vehicles.map((v) => (
           <VehicleRow key={v.id} vehicle={v} />
         ))}

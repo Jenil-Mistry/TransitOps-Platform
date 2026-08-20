@@ -7,10 +7,10 @@ interface DriverStatusBadgeProps {
 export default function DriverStatusBadge({ status }: DriverStatusBadgeProps) {
   const getStatusColor = (status: DriverStatus) => {
     switch (status) {
-      case 'Available': return 'bg-[#16A34A] text-white';
-      case 'On Trip': return 'bg-[#FAFAFA] border border-[#ECECEC] text-[#111111]';
-      case 'Off Duty': return 'bg-[#FAFAFA] text-[#6B7280]';
-      case 'Suspended': return 'bg-[#DC2626] text-white';
+      case 'Available': return 'bg-[var(--color-1)] text-white';
+      case 'On Trip': return 'bg-[var(--color-6)] border border-[var(--color-3)] text-[var(--color-1)]';
+      case 'Off Duty': return 'bg-[var(--color-6)] text-[var(--color-text-muted)]';
+      case 'Suspended': return 'bg-[var(--color-1)] text-white';
     }
   };
 

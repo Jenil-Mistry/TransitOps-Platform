@@ -11,11 +11,11 @@ export default function VehicleRow({ vehicle }: VehicleRowProps) {
   return (
     <TableRow>
       <TableCell className="font-semibold">{vehicle.registrationNumber}</TableCell>
-      <TableCell className="text-[#6B7280]">{vehicle.name}</TableCell>
-      <TableCell className="text-[#6B7280]">{vehicle.type}</TableCell>
-      <TableCell className="text-[#6B7280]">{vehicle.maxLoadCapacity} kg</TableCell>
-      <TableCell className="text-[#6B7280]">{vehicle.odometer.toLocaleString()} km</TableCell>
-      <TableCell className="text-[#6B7280]">₹{vehicle.acquisitionCost.toLocaleString()}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{vehicle.name}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{vehicle.type}</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{vehicle.maxLoadCapacity} kg</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">{vehicle.odometer.toLocaleString()} km</TableCell>
+      <TableCell className="text-[var(--color-text-muted)]">₹{vehicle.acquisitionCost.toLocaleString()}</TableCell>
       <TableCell>
         <VehicleStatusBadge status={vehicle.status} />
       </TableCell>
