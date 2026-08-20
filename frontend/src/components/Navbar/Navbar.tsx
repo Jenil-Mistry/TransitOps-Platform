@@ -1,9 +1,10 @@
 import { useLocation } from 'react-router-dom';
-import { Menu, Plus } from 'lucide-react';
+import { Menu, Plus, Sun, Moon } from 'lucide-react';
 import SearchBar from './SearchBar';
 import NotificationButton from './NotificationButton';
 import ProfileDropdown from './ProfileDropdown';
 import Button from '../ui/Button';
+import { useTheme } from '../../context/ThemeContext';
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   '/dashboard': { title: 'Dashboard', subtitle: 'Overview of your fleet operations' },
@@ -24,6 +25,7 @@ interface NavbarProps {
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const { pathname } = useLocation();
   const pageInfo = pageTitles[pathname] || { title: 'TransitOps', subtitle: '' };
+  const { theme, setTheme } = useTheme();
 
   return (
     <header className="h-16 bg-[var(--color-bg-primary)] border-b border-[var(--color-border)] flex items-center justify-between px-6 flex-shrink-0">
@@ -50,6 +52,14 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-3">
+        <button
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-colors cursor-pointer"
+          aria-label="Toggle theme"
+        >
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+
         <NotificationButton />
 
         <Button

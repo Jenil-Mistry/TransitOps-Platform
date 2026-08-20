@@ -82,7 +82,7 @@ function MegaMenuNavbar() {
           if (self.progress > 0) {
             gsap.to(navRef.current, { y: -32, width: '100%', borderRadius: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', duration: 0.3, ease: 'power2.out' });
           } else {
-            gsap.to(navRef.current, { y: 0, width: 'calc(100% - 3rem)', borderRadius: '12px', border: '2px solid var(--color-border-strong)', duration: 0.3, ease: 'power2.out' });
+            gsap.to(navRef.current, { y: 0, width: 'calc(100% - 3rem)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border-strong)', duration: 0.3, ease: 'power2.out' });
           }
         }
       });
@@ -93,11 +93,11 @@ function MegaMenuNavbar() {
     <div className="fixed top-8 left-0 w-full z-50 flex justify-center pointer-events-none px-6" onMouseLeave={handleMouseLeave}>
       <nav 
         ref={navRef}
-        className="w-full max-w-[1400px] h-16 flex items-center justify-between px-6 bg-[var(--color-bg-app)]/95 backdrop-blur-md border-2 border-[var(--color-border-strong)] rounded-xl pointer-events-auto shadow-lg shadow-black/20 relative"
+        className="w-full max-w-[1400px] h-16 flex items-center justify-between px-6 bg-[var(--color-bg-primary)]/95 backdrop-blur-md border border-[var(--color-border-strong)] rounded-[var(--radius-xl)] pointer-events-auto shadow-sm relative"
       >
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[var(--color-brand)] border-2 border-[var(--color-brand-foreground)] flex items-center justify-center">
+          <div className="w-8 h-8 bg-[var(--color-brand)] rounded-[var(--radius-sm)] flex items-center justify-center">
             <span className="text-[var(--color-brand-foreground)] font-extrabold font-mono leading-none">T</span>
           </div>
           <span className="font-black text-xl tracking-tighter uppercase">TransitOps</span>
@@ -140,16 +140,16 @@ function MegaMenuNavbar() {
         {/* Mega Menu Dropdown */}
         {activeMenu && (
           <div 
-            className="absolute top-[calc(100%+16px)] left-1/2 -translate-x-1/2 w-[800px] bg-[var(--color-bg-secondary)] border-2 border-[var(--color-border-strong)] rounded-[var(--radius-sm)] shadow-[8px_8px_0_var(--color-border-strong)] p-6 hidden lg:block animate-in fade-in slide-in-from-top-4 duration-200"
+            className="absolute top-[calc(100%+16px)] left-1/2 -translate-x-1/2 w-[800px] bg-[var(--color-bg-primary)] border border-[var(--color-border-strong)] rounded-[var(--radius-lg)] shadow-lg shadow-black/5 p-6 hidden lg:block animate-in fade-in slide-in-from-top-4 duration-200"
             onMouseEnter={() => handleMouseEnter(activeMenu)}
           >
             {/* Caret */}
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-4 h-4 bg-[var(--color-bg-secondary)] border-t-2 border-l-2 border-[var(--color-border-strong)] rotate-45" />
+            <div className="absolute -top-[7px] left-1/2 -translate-x-1/2 w-4 h-4 bg-[var(--color-bg-primary)] border-t border-l border-[var(--color-border-strong)] rotate-45 rounded-tl-sm" />
             
             <div className="grid grid-cols-2 gap-x-8 gap-y-6">
               {navigationData[activeMenu as keyof typeof navigationData].map((item, i) => (
-                <a key={i} href="#" className="flex items-start gap-4 p-3 hover:bg-[var(--color-bg-primary)] rounded-[var(--radius-sm)] border-2 border-transparent hover:border-[var(--color-border-strong)] transition-all group">
-                  <div className="p-2 bg-[var(--color-bg-app)] border-2 border-[var(--color-border-strong)] rounded-md text-[var(--color-text-primary)] group-hover:bg-[var(--color-brand)] group-hover:text-[var(--color-brand-foreground)] transition-colors">
+                <a key={i} href="#" className="flex items-start gap-4 p-3 hover:bg-[var(--color-bg-hover)] rounded-[var(--radius-md)] border border-transparent hover:border-[var(--color-border-strong)] transition-all group">
+                  <div className="p-2 bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)] rounded-[var(--radius-sm)] text-[var(--color-text-primary)] group-hover:bg-[var(--color-brand)] group-hover:text-[var(--color-brand-foreground)] transition-colors">
                     <item.icon className="w-5 h-5" />
                   </div>
                   <div>
@@ -208,66 +208,76 @@ export default function Landing() {
   useGSAP(() => {
     if (!containerRef.current) return;
 
-    const tl = gsap.timeline();
-    
-    tl.fromTo('.hero-badge', 
-      { opacity: 0, y: -20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.2 }
-    )
-    .fromTo('.hero-title',
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
-      "-=0.4"
-    )
-    .fromTo('.hero-subtitle',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
-      "-=0.6"
-    )
-    .fromTo('.hero-actions',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
-      "-=0.4"
-    )
-    .fromTo('.hero-dashboard',
-      { opacity: 0, y: 100, rotateX: 10 },
-      { opacity: 1, y: 0, rotateX: 0, duration: 1.2, ease: 'power4.out' },
-      "-=0.4"
-    );
+    let mm = gsap.matchMedia();
 
-    gsap.utils.toArray('.bento-item').forEach((item: any) => {
-      gsap.fromTo(item,
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const tl = gsap.timeline();
+      
+      tl.fromTo('.hero-badge', 
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: 0.2 }
+      )
+      .fromTo('.hero-title',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+        "-=0.4"
+      )
+      .fromTo('.hero-subtitle',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+        "-=0.6"
+      )
+      .fromTo('.hero-actions',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+        "-=0.4"
+      )
+      .fromTo('.hero-dashboard',
         { opacity: 0, y: 50 },
-        {
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: item,
-            start: "top 85%",
-            toggleActions: "play none none reverse"
-          }
-        }
+        { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out' },
+        "-=0.4"
       );
+
+      gsap.utils.toArray('.bento-item').forEach((item: any) => {
+        gsap.fromTo(item,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1, 
+            y: 0, 
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: item,
+              start: "top 85%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      });
+
+      gsap.utils.toArray('.stat-number').forEach((stat: any) => {
+        gsap.fromTo(stat,
+          { opacity: 0, scale: 0.9 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: 'back.out(1.5)',
+            scrollTrigger: {
+              trigger: stat,
+              start: "top 80%"
+            }
+          }
+        );
+      });
     });
 
-    gsap.utils.toArray('.stat-number').forEach((stat: any) => {
-      gsap.fromTo(stat,
-        { opacity: 0, scale: 0.8 },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: stat,
-            start: "top 80%"
-          }
-        }
-      );
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      // Just fade in everything if reduced motion is preferred
+      gsap.set('.hero-badge, .hero-title, .hero-subtitle, .hero-actions, .hero-dashboard, .bento-item, .stat-number', { opacity: 1, y: 0, scale: 1 });
     });
 
+    return () => mm.revert();
   }, { scope: containerRef });
 
   return (
@@ -277,16 +287,16 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative pt-[200px] pb-20 md:pt-[240px] md:pb-32 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border-strong)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border-strong)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="max-w-[1000px] mx-auto text-center relative z-10">
-          <div className="hero-badge inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-bg-secondary)] border-2 border-[var(--color-border-strong)] text-[var(--color-text-muted)] font-mono text-xs font-bold uppercase tracking-widest mb-8">
-            <span className="w-2 h-2 bg-[var(--color-brand)]" />
+          <div className="hero-badge inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-brand-soft)] border border-[#FACC15]/30 text-[#956400] rounded-full font-mono text-xs font-bold uppercase tracking-widest mb-8">
+            <span className="w-2 h-2 bg-[#956400] rounded-full" />
             System v4.0 Deployed
           </div>
 
-          <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.9] mb-6">
-            Command Your <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-brand)] to-[#ffc107]">Entire Fleet.</span>
+          <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.9] mb-6 text-[var(--color-text-primary)]">
+            Command Your <br/> <span className="relative inline-block">Entire Fleet.<div className="absolute bottom-2 left-0 w-full h-4 bg-[var(--color-brand)]/40 -z-10" /></span>
           </h1>
 
           <p className="hero-subtitle text-lg md:text-xl text-[var(--color-text-muted)] font-mono max-w-2xl mx-auto mb-10 tracking-wide">
@@ -310,8 +320,8 @@ export default function Landing() {
       {/* Dashboard Preview Abstract */}
       <section className="px-6 -mt-10 md:-mt-20 relative z-20 pb-24">
         <div className="hero-dashboard max-w-[1200px] mx-auto">
-          <div className="rounded-none border-4 border-[var(--color-border-strong)] bg-[var(--color-bg-primary)] shadow-[16px_16px_0_var(--color-border-strong)] overflow-hidden">
-            <div className="h-10 bg-[var(--color-bg-secondary)] border-b-4 border-[var(--color-border-strong)] flex items-center px-4 gap-2">
+          <div className="rounded-[var(--radius-xl)] border border-[var(--color-border-strong)] bg-[var(--color-bg-primary)] shadow-2xl shadow-black/5 overflow-hidden">
+            <div className="h-10 bg-[var(--color-bg-secondary)] border-b border-[var(--color-border-strong)] flex items-center px-4 gap-2">
               <div className="w-3 h-3 bg-[var(--color-danger)]" />
               <div className="w-3 h-3 bg-[var(--color-warning)]" />
               <div className="w-3 h-3 bg-[var(--color-success)]" />
@@ -322,28 +332,28 @@ export default function Landing() {
             <div className="p-4 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 bg-[var(--color-bg-app)]">
               <div className="col-span-1 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[1,2,3,4].map(i => (
-                  <div key={i} className="border-2 border-[var(--color-border-strong)] p-4 bg-[var(--color-bg-primary)]">
-                    <div className="w-16 h-2 bg-[var(--color-border-strong)] mb-4" />
-                    <div className="w-24 h-8 bg-[var(--color-text-primary)] opacity-20 mb-2" />
-                    <div className="w-12 h-2 bg-[var(--color-success)] opacity-50" />
+                  <div key={i} className="border border-[var(--color-border-strong)] p-4 bg-[var(--color-bg-primary)] rounded-[var(--radius-md)]">
+                    <div className="w-16 h-2 bg-[var(--color-border-strong)] mb-4 rounded-full" />
+                    <div className="w-24 h-8 bg-[var(--color-text-secondary)] opacity-10 mb-2 rounded-[var(--radius-sm)]" />
+                    <div className="w-12 h-2 bg-[var(--color-success)] opacity-70 rounded-full" />
                   </div>
                 ))}
               </div>
-              <div className="col-span-1 md:col-span-2 border-2 border-[var(--color-border-strong)] h-64 bg-[var(--color-bg-primary)] p-4 flex flex-col justify-end relative overflow-hidden">
-                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:2rem_2rem] opacity-30" />
-                 <div className="w-full h-32 border-t-2 border-dashed border-[var(--color-brand)] relative z-10 flex items-end gap-2">
+              <div className="col-span-1 md:col-span-2 border border-[var(--color-border-strong)] h-64 bg-[var(--color-bg-primary)] p-4 flex flex-col justify-end relative overflow-hidden rounded-[var(--radius-md)]">
+                 <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border-strong)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border-strong)_1px,transparent_1px)] bg-[size:2rem_2rem]" />
+                 <div className="w-full h-32 border-t border-dashed border-[var(--color-brand)] relative z-10 flex items-end gap-2">
                     {[40, 70, 45, 90, 65, 80, 55, 100].map((h, i) => (
-                      <div key={i} className="flex-1 bg-[var(--color-brand)] opacity-80" style={{ height: `${h}%` }} />
+                      <div key={i} className="flex-1 bg-[var(--color-brand)] opacity-90 rounded-t-[var(--radius-sm)]" style={{ height: `${h}%` }} />
                     ))}
                  </div>
               </div>
-              <div className="col-span-1 border-2 border-[var(--color-border-strong)] h-64 bg-[var(--color-bg-primary)] p-4 space-y-4">
+              <div className="col-span-1 border border-[var(--color-border-strong)] h-64 bg-[var(--color-bg-primary)] p-4 space-y-4 rounded-[var(--radius-md)]">
                  {[1,2,3,4].map(i => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="w-8 h-8 border-2 border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)]" />
+                      <div className="w-8 h-8 border border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] rounded-full" />
                       <div className="flex-1">
-                        <div className="w-full h-2 bg-[var(--color-border-strong)] mb-1" />
-                        <div className="w-1/2 h-2 bg-[var(--color-border-strong)]" />
+                        <div className="w-full h-2 bg-[var(--color-border-strong)] mb-1 rounded-full" />
+                        <div className="w-1/2 h-2 bg-[var(--color-border-strong)] rounded-full" />
                       </div>
                     </div>
                  ))}
@@ -354,9 +364,9 @@ export default function Landing() {
       </section>
 
       {/* Marquee - Social Proof */}
-      <section className="border-y-4 border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] py-6 overflow-hidden">
-        <div className="flex whitespace-nowrap opacity-50">
-          <div className="animate-marquee inline-block font-mono text-xl font-bold uppercase tracking-[0.2em]">
+      <section className="border-y border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] py-6 overflow-hidden">
+        <div className="flex whitespace-nowrap opacity-60">
+          <div className="animate-marquee inline-block font-mono text-xl font-bold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
             &bull; TRUSTED BY NY MTA &bull; LONDON TFL &bull; TOKYO METRO &bull; BERLIN BVG &bull; PARIS RATP &bull; SYDNEY TRAINS &bull; TRUSTED BY NY MTA &bull; LONDON TFL &bull; TOKYO METRO &bull; BERLIN BVG &bull; PARIS RATP &bull; SYDNEY TRAINS
           </div>
         </div>
@@ -371,35 +381,36 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bento-item md:col-span-2 border-2 border-[var(--color-border-strong)] rounded-none bg-[var(--color-bg-secondary)] overflow-hidden">
+            <Card className="bento-item md:col-span-2 bg-[var(--color-bg-secondary)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
               <CardContent className="p-8 md:p-12">
-                <Globe className="w-10 h-10 text-[var(--color-brand)] mb-6" />
+                <Globe className="w-10 h-10 text-[var(--color-info)] mb-6" />
                 <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">Global Telematics</h3>
                 <p className="text-[var(--color-text-muted)] font-mono text-sm leading-relaxed max-w-md">Track every vehicle in your fleet with sub-second latency. Geofencing, route deviation alerts, and live traffic overlays integrated directly into your command center.</p>
               </CardContent>
             </Card>
             
-            <Card className="bento-item border-2 border-[var(--color-border-strong)] rounded-none bg-[var(--color-bg-secondary)]">
+            <Card className="bento-item bg-[var(--color-bg-secondary)] transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
               <CardContent className="p-8 md:p-12">
-                <Cpu className="w-10 h-10 text-[var(--color-brand)] mb-6" />
+                <Cpu className="w-10 h-10 text-[var(--color-warning)] mb-6" />
                 <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">Predictive Engine</h3>
                 <p className="text-[var(--color-text-muted)] font-mono text-sm leading-relaxed">Machine learning models analyze engine telemetry to schedule maintenance before critical failures occur.</p>
               </CardContent>
             </Card>
 
-            <Card className="bento-item border-2 border-[var(--color-border-strong)] rounded-none bg-[var(--color-bg-secondary)]">
+            <Card className="bento-item bg-[var(--color-bg-secondary)] transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
               <CardContent className="p-8 md:p-12">
-                <Shield className="w-10 h-10 text-[var(--color-brand)] mb-6" />
+                <Shield className="w-10 h-10 text-[var(--color-success)] mb-6" />
                 <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">Safety Matrix</h3>
                 <p className="text-[var(--color-text-muted)] font-mono text-sm leading-relaxed">Monitor driver behavior, harsh braking, and speed limit violations to enforce safety protocols.</p>
               </CardContent>
             </Card>
 
-            <Card className="bento-item md:col-span-2 border-2 border-[var(--color-border-strong)] rounded-none bg-[var(--color-brand)] text-[var(--color-brand-foreground)] overflow-hidden">
-              <CardContent className="p-8 md:p-12">
-                <Zap className="w-10 h-10 mb-6" />
+            <Card className="bento-item md:col-span-2 border-[var(--color-brand)] bg-[var(--color-brand-soft)] text-[var(--color-text-primary)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+              <CardContent className="p-8 md:p-12 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-brand)] rounded-full blur-3xl opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/3" />
+                <Zap className="w-10 h-10 text-[#D97706] mb-6" />
                 <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">Automated Dispatch</h3>
-                <p className="font-mono text-sm leading-relaxed max-w-md font-bold opacity-90">Algorithmic routing assigns the best vehicle and driver to every trip based on hours-of-service, location, and load capacity.</p>
+                <p className="font-mono text-sm leading-relaxed max-w-md font-medium text-[#D97706]">Algorithmic routing assigns the best vehicle and driver to every trip based on hours-of-service, location, and load capacity.</p>
               </CardContent>
             </Card>
           </div>
@@ -407,24 +418,24 @@ export default function Landing() {
       </section>
 
       {/* KPI Outcomes Section */}
-      <section id="outcomes" className="py-24 border-y-4 border-[var(--color-border-strong)] bg-black text-white px-6">
+      <section id="outcomes" className="py-24 border-y border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] px-6">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center md:text-left">
             <div>
-              <div className="stat-number text-5xl md:text-7xl font-black font-mono tracking-tighter text-[var(--color-brand)] mb-2">-32%</div>
-              <div className="text-sm font-bold uppercase tracking-widest text-neutral-400">Fuel Waste</div>
+              <div className="stat-number text-5xl md:text-7xl font-black font-mono tracking-tighter text-[#D97706] mb-2">-32%</div>
+              <div className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Fuel Waste</div>
             </div>
             <div>
               <div className="stat-number text-5xl md:text-7xl font-black font-mono tracking-tighter text-[var(--color-brand)] mb-2">99.9%</div>
-              <div className="text-sm font-bold uppercase tracking-widest text-neutral-400">System Uptime</div>
+              <div className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">System Uptime</div>
             </div>
             <div>
-              <div className="stat-number text-5xl md:text-7xl font-black font-mono tracking-tighter text-[var(--color-brand)] mb-2">15M+</div>
-              <div className="text-sm font-bold uppercase tracking-widest text-neutral-400">Trips Logged</div>
+              <div className="stat-number text-5xl md:text-7xl font-black font-mono tracking-tighter text-[#D97706] mb-2">15M+</div>
+              <div className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Trips Logged</div>
             </div>
             <div>
               <div className="stat-number text-5xl md:text-7xl font-black font-mono tracking-tighter text-[var(--color-brand)] mb-2">24/7</div>
-              <div className="text-sm font-bold uppercase tracking-widest text-neutral-400">Live Support</div>
+              <div className="text-sm font-bold uppercase tracking-widest text-[var(--color-text-secondary)]">Live Support</div>
             </div>
           </div>
         </div>
@@ -437,7 +448,7 @@ export default function Landing() {
           <p className="text-lg text-[var(--color-text-muted)] font-mono mb-10">Stop managing fleets with spreadsheets and consumer apps. Upgrade to the industrial standard.</p>
           
           <Link to="/login">
-            <Button size="lg" className="h-16 text-base px-10 group shadow-[8px_8px_0_var(--color-border-strong)] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all">
+            <Button size="lg" className="h-16 text-base px-10 group shadow-sm hover:shadow-md transition-all">
               Initialize Terminal <ArrowUpRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
@@ -445,7 +456,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t-4 border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] px-6 py-12">
+      <footer className="border-t border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] px-6 py-12">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] flex items-center justify-center">

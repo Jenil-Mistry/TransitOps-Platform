@@ -12,15 +12,17 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
 import { useAuthStore } from './store/useAuthStore';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <Router>
-      <Routes>
-        {/* Route / : Shows Landing page (redirects to /dashboard if already logged in) */}
-        <Route 
+    <ThemeProvider defaultTheme="light" storageKey="transitops-theme">
+      <Router>
+        <Routes>
+          {/* Route / : Shows Landing page (redirects to /dashboard if already logged in) */}
+          <Route 
           path="/" 
           element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} 
         />
@@ -46,6 +48,7 @@ function App() {
         <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} replace />} />
       </Routes>
     </Router>
+    </ThemeProvider>
   );
 }
 
