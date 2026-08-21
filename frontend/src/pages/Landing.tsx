@@ -72,25 +72,8 @@ function MegaMenuNavbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  useGSAP(() => {
-    if (navRef.current) {
-      ScrollTrigger.create({
-        start: 'top -50',
-        end: 99999,
-        toggleClass: { className: 'nav-scrolled', targets: navRef.current },
-        onUpdate: (self) => {
-          if (self.progress > 0) {
-            gsap.to(navRef.current, { y: -32, width: '100%', borderRadius: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', duration: 0.3, ease: 'power2.out' });
-          } else {
-            gsap.to(navRef.current, { y: 0, width: 'calc(100% - 3rem)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border-strong)', duration: 0.3, ease: 'power2.out' });
-          }
-        }
-      });
-    }
-  });
-
   return (
-    <div className="fixed top-8 left-0 w-full z-50 flex justify-center pointer-events-none px-6" onMouseLeave={handleMouseLeave}>
+    <div className="fixed top-5 left-0 w-full z-50 flex justify-center pointer-events-none px-6" onMouseLeave={handleMouseLeave}>
       <nav 
         ref={navRef}
         className="w-full max-w-[1400px] h-16 flex items-center justify-between px-6 bg-[var(--color-bg-primary)]/95 backdrop-blur-md border border-[var(--color-border-strong)] rounded-[var(--radius-xl)] pointer-events-auto shadow-sm relative"
@@ -290,10 +273,6 @@ export default function Landing() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-border-strong)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-border-strong)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="max-w-[1000px] mx-auto text-center relative z-10">
-          <div className="hero-badge inline-flex items-center gap-2 px-3 py-1 bg-[var(--color-brand-soft)] border border-[#FACC15]/30 text-[#956400] rounded-full font-mono text-xs font-bold uppercase tracking-widest mb-8">
-            <span className="w-2 h-2 bg-[#956400] rounded-full" />
-            System v4.0 Deployed
-          </div>
 
           <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-[0.9] mb-6 text-[var(--color-text-primary)]">
             Command Your <br/> <span className="relative inline-block">Entire Fleet.<div className="absolute bottom-2 left-0 w-full h-4 bg-[var(--color-brand)]/40 -z-10" /></span>
@@ -305,14 +284,11 @@ export default function Landing() {
 
           <div className="hero-actions flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/login">
-              <Button size="lg" className="w-full sm:w-auto h-14 text-sm px-8 group">
-                Initialize Terminal 
+              <Button size="lg" className="w-full sm:w-auto h-14 text-sm px-5 group">
+                Get Started 
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto h-14 text-sm px-8">
-              View Architecture
-            </Button>
           </div>
         </div>
       </section>
@@ -364,9 +340,9 @@ export default function Landing() {
       </section>
 
       {/* Marquee - Social Proof */}
-      <section className="border-y border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] py-6 overflow-hidden">
+      <section className="border-y border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] py-6 overflow-hidden group">
         <div className="flex whitespace-nowrap opacity-60">
-          <div className="animate-marquee inline-block font-mono text-xl font-bold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
+          <div className="animate-marquee inline-block font-mono text-xl font-bold uppercase tracking-[0.2em] text-[var(--color-text-secondary)] group-hover:[animation-play-state:paused]">
             &bull; TRUSTED BY NY MTA &bull; LONDON TFL &bull; TOKYO METRO &bull; BERLIN BVG &bull; PARIS RATP &bull; SYDNEY TRAINS &bull; TRUSTED BY NY MTA &bull; LONDON TFL &bull; TOKYO METRO &bull; BERLIN BVG &bull; PARIS RATP &bull; SYDNEY TRAINS
           </div>
         </div>
@@ -405,12 +381,12 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            <Card className="bento-item md:col-span-2 border-[var(--color-brand)] bg-[var(--color-brand-soft)] text-[var(--color-text-primary)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+            <Card className="bento-item md:col-span-2 bg-[var(--color-bg-secondary)] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
               <CardContent className="p-8 md:p-12 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-brand)] rounded-full blur-3xl opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/3" />
                 <Zap className="w-10 h-10 text-[#D97706] mb-6" />
                 <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">Automated Dispatch</h3>
-                <p className="font-mono text-sm leading-relaxed max-w-md font-medium text-[#D97706]">Algorithmic routing assigns the best vehicle and driver to every trip based on hours-of-service, location, and load capacity.</p>
+                <p className="text-[var(--color-text-muted)] font-mono text-sm leading-relaxed max-w-md">Algorithmic routing assigns the best vehicle and driver to every trip based on hours-of-service, location, and load capacity.</p>
               </CardContent>
             </Card>
           </div>
@@ -448,8 +424,8 @@ export default function Landing() {
           <p className="text-lg text-[var(--color-text-muted)] font-mono mb-10">Stop managing fleets with spreadsheets and consumer apps. Upgrade to the industrial standard.</p>
           
           <Link to="/login">
-            <Button size="lg" className="h-16 text-base px-10 group shadow-sm hover:shadow-md transition-all">
-              Initialize Terminal <ArrowUpRight className="w-5 h-5 ml-2" />
+            <Button size="lg" className="h-16 text-base px-6 group shadow-sm hover:shadow-md transition-all">
+              Get Started <ArrowUpRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
         </div>

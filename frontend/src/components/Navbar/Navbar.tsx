@@ -1,6 +1,5 @@
 import { useLocation } from 'react-router-dom';
 import { Menu, Plus, Sun, Moon } from 'lucide-react';
-import SearchBar from './SearchBar';
 import NotificationButton from './NotificationButton';
 import ProfileDropdown from './ProfileDropdown';
 import Button from '../ui/Button';
@@ -45,10 +44,6 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
         </div>
       </div>
 
-      {/* Center: Search */}
-      <div className="flex-1 max-w-md mx-6 hidden md:block">
-        <SearchBar />
-      </div>
 
       {/* Right: Actions */}
       <div className="flex items-center gap-3">
