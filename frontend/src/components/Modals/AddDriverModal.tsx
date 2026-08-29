@@ -54,22 +54,22 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#111111]/40 backdrop-blur-sm p-4 animate-fadeIn">
-      <div className="bg-white rounded-[28px] border border-[#ECECEC] w-full max-w-lg card-shadow overflow-hidden animate-scaleUp">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-1)]/40 backdrop-blur-sm p-4 animate-fadeIn">
+      <div className="bg-white rounded-[28px] border border-[var(--color-3)] w-full max-w-lg  overflow-hidden animate-scaleUp">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-[#ECECEC] flex items-center justify-between bg-[#FAFAFA]">
+        <div className="px-6 py-5 border-b border-[var(--color-3)] flex items-center justify-between bg-[var(--color-6)]">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0C0D0D] text-white flex items-center justify-center shadow-sm">
+            <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-1)] text-white flex items-center justify-center ">
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-[#111111] tracking-tight">Add New Driver & Credentials</h3>
-              <p className="text-xs text-[#6B7280]">Register driver profile & license into Neon DB</p>
+              <h3 className="text-lg font-bold text-[var(--color-1)] tracking-tight">Add New Driver & Credentials</h3>
+              <p className="text-xs text-[var(--color-text-muted)]">Register driver profile & license into Neon DB</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#ECECEC] flex items-center justify-center text-[#6B7280] hover:text-[#111111] hover:bg-[#FAFAFA] transition-all"
+            className="w-8 h-8 rounded-full bg-white border border-[var(--color-3)] flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-1)] hover:bg-[var(--color-6)] transition-all"
           >
             <X className="w-4 h-4" />
           </button>
@@ -78,14 +78,14 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
-            <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl flex items-center">
+            <div className="p-3.5 bg-[var(--color-danger-soft)] border border-[var(--color-danger)] text-[var(--color-danger)] text-xs rounded-[var(--radius-sm)] flex items-center">
               <span className="font-semibold mr-1">Error:</span> {error}
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
                 Full Name *
               </label>
               <input
@@ -93,13 +93,13 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
                 placeholder="e.g. Jason Statham"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+                className="w-full h-11 px-3.5 bg-[var(--color-6)] border border-[var(--color-3)] rounded-[var(--radius-sm)] text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
                 License No. (Credential ID) *
               </label>
               <input
@@ -107,7 +107,7 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
                 placeholder="e.g. DL-CA-992384"
                 value={licenseNumber}
                 onChange={(e) => setLicenseNumber(e.target.value)}
-                className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+                className="w-full h-11 px-3.5 bg-[var(--color-6)] border border-[var(--color-3)] rounded-[var(--radius-sm)] text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
                 required
               />
             </div>
@@ -115,13 +115,13 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
                 License Category *
               </label>
               <select
                 value={licenseCategory}
                 onChange={(e) => setLicenseCategory(e.target.value)}
-                className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+                className="w-full h-11 px-3.5 bg-[var(--color-6)] border border-[var(--color-3)] rounded-[var(--radius-sm)] text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
               >
                 <option value="Heavy Motor Vehicle (HMV)">Heavy Motor Vehicle (HMV)</option>
                 <option value="Light Motor Vehicle (LMV)">Light Motor Vehicle (LMV)</option>
@@ -131,14 +131,14 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
                 License Expiry Date *
               </label>
               <input
                 type="date"
                 value={licenseExpiryDate}
                 onChange={(e) => setLicenseExpiryDate(e.target.value)}
-                className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+                className="w-full h-11 px-3.5 bg-[var(--color-6)] border border-[var(--color-3)] rounded-[var(--radius-sm)] text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
                 required
               />
             </div>
@@ -146,7 +146,7 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
                 Contact Phone No. *
               </label>
               <input
@@ -154,13 +154,13 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
                 placeholder="+1-555-0182"
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+                className="w-full h-11 px-3.5 bg-[var(--color-6)] border border-[var(--color-3)] rounded-[var(--radius-sm)] text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+              <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
                 Initial Safety Score (0-100) *
               </label>
               <input
@@ -170,14 +170,14 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
                 placeholder="100"
                 value={safetyScore}
                 onChange={(e) => setSafetyScore(e.target.value)}
-                className="w-full h-11 px-3.5 bg-[#FAFAFA] border border-[#ECECEC] rounded-2xl text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#0C0D0D] transition-all"
+                className="w-full h-11 px-3.5 bg-[var(--color-6)] border border-[var(--color-3)] rounded-[var(--radius-sm)] text-sm font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-[var(--color-brand)]/20 transition-all"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-[#6B7280] uppercase mb-1.5 tracking-wide">
+            <label className="block text-[10px] font-bold text-[var(--color-text-muted)] uppercase mb-1.5 tracking-wide">
               Initial Duty Status
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -186,10 +186,10 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
                   key={st}
                   type="button"
                   onClick={() => setStatus(st)}
-                  className={`h-10 text-xs font-semibold rounded-xl border transition-all flex items-center justify-center ${
+                  className={`h-10 text-xs font-semibold rounded-[var(--radius-sm)] border transition-all flex items-center justify-center ${
                     status === st
-                      ? 'bg-[#0C0D0D] text-white border-[#0C0D0D] shadow-sm'
-                      : 'bg-[#FAFAFA] text-[#6B7280] border-[#ECECEC] hover:bg-white hover:text-[#111111]'
+                      ? 'bg-[var(--color-1)] text-white border-[var(--color-1)] '
+                      : 'bg-[var(--color-6)] text-[var(--color-text-muted)] border-[var(--color-3)] hover:bg-white hover:text-[var(--color-1)]'
                   }`}
                 >
                   {status === st && <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-green-400" />}
@@ -200,18 +200,18 @@ export default function AddDriverModal({ isOpen, onClose }: AddDriverModalProps)
           </div>
 
           {/* Footer Actions */}
-          <div className="pt-4 flex items-center justify-end space-x-3 border-t border-[#ECECEC]">
+          <div className="pt-4 flex items-center justify-end space-x-3 border-t border-[var(--color-3)]">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 h-11 rounded-2xl bg-[#FAFAFA] border border-[#ECECEC] text-[#6B7280] hover:text-[#111111] text-xs font-bold transition-colors"
+              className="px-5 h-11 rounded-[var(--radius-sm)] bg-[var(--color-6)] border border-[var(--color-3)] text-[var(--color-text-muted)] hover:text-[var(--color-1)] text-xs font-bold transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 h-11 rounded-2xl bg-[#0C0D0D] text-white hover:scale-[1.02] text-xs font-bold transition-all shadow-sm disabled:opacity-50 flex items-center"
+              className="px-6 h-11 rounded-[var(--radius-sm)] bg-[var(--color-1)] text-white hover:scale-[1.02] text-xs font-bold transition-all  disabled:opacity-50 flex items-center"
             >
               {loading ? 'Saving Driver...' : 'Add Driver Profile'}
             </button>

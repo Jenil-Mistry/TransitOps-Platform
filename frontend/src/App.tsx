@@ -6,21 +6,25 @@ import Drivers from './pages/Drivers';
 import Trips from './pages/Trips';
 import Maintenance from './pages/Maintenance';
 import Expenses from './pages/Expenses';
+import Analytics from './pages/Analytics';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 import { useAuthStore } from './store/useAuthStore';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <Router>
-      <Routes>
-        {/* Route / : Shows Login form as per backend (redirects to /dashboard if already logged in) */}
-        <Route 
+    <ThemeProvider defaultTheme="light" storageKey="transitops-theme">
+      <Router>
+        <Routes>
+          {/* Route / : Shows Landing page (redirects to /dashboard if already logged in) */}
+          <Route 
           path="/" 
-          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} 
         />
         <Route 
           path="/login" 
@@ -35,6 +39,7 @@ function App() {
           <Route path="/trips" element={<Trips />} />
           <Route path="/maintenance" element={<Maintenance />} />
           <Route path="/expenses" element={<Expenses />} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
@@ -43,6 +48,7 @@ function App() {
         <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} replace />} />
       </Routes>
     </Router>
+    </ThemeProvider>
   );
 }
 

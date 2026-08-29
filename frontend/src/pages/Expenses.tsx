@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { useExpenseStore } from '../store/useExpenseStore';
 import { useVehicleStore } from '../store/useVehicleStore';
 import { useMaintenanceStore } from '../store/useMaintenanceStore';
-import { Plus } from 'lucide-react';
+import { Plus, Search, DollarSign, Fuel, Wrench, TrendingDown } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Badge } from '../components/ui/Badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
+import KpiCard from '../components/ui/KpiCard';
+import Tabs, { useTabs } from '../components/ui/Tabs';
+import EmptyState from '../components/ui/EmptyState';
 import AddFuelModal from '../components/Modals/AddFuelModal';
 
 export default function Expenses() {
@@ -13,13 +20,14 @@ export default function Expenses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
-  const [timeFilter, setTimeFilter] = useState('This Month');
+  const { activeTab, setActiveTab } = useTabs('fuel');
 
   const totalFuel = fuelLogs.reduce((sum, log) => sum + log.cost, 0);
   const totalMaintenance = maintenanceLogs.reduce((sum, log) => sum + log.cost, 0);
   const totalExpenses = totalFuel + totalMaintenance;
+  const totalLitres = fuelLogs.reduce((sum, log) => sum + log.liters, 0);
 
-  // Combine fuel and maintenance logs into a single feed for filtering
+  // Combine fuel and maintenance logs
   const combinedLogs = [
     ...fuelLogs.map((log) => ({
       id: `f-${log.id}`,
@@ -39,141 +47,106 @@ export default function Expenses() {
     })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  // Filter combined logs by Search, Type, and Time
   const filteredLogs = combinedLogs.filter((log) => {
     const vehicle = vehicles.find((v) => v.id === log.vehicleId);
     const regNum = vehicle?.registrationNumber || '';
     const vehicleName = vehicle?.name || '';
-    
-    // Search check
-    if (
-      searchTerm &&
-      !regNum.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !log.details.toLowerCase().includes(searchTerm.toLowerCase())
-    ) {
-      return false;
-    }
 
-    // Type check
-    if (typeFilter !== 'All' && log.type !== typeFilter) {
-      return false;
-    }
+    if (searchTerm && !regNum.toLowerCase().includes(searchTerm.toLowerCase()) && !vehicleName.toLowerCase().includes(searchTerm.toLowerCase()) && !log.details.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+    if (typeFilter !== 'All' && log.type !== typeFilter) return false;
 
-    // Time check
-    if (timeFilter !== 'All Time') {
-      const logDate = new Date(log.date);
-      const now = new Date();
-      if (timeFilter === 'This Month') {
-        if (logDate.getMonth() !== now.getMonth() || logDate.getFullYear() !== now.getFullYear()) {
-          return false;
-        }
-      } else if (timeFilter === 'This Year') {
-        if (logDate.getFullYear() !== now.getFullYear()) {
-          return false;
-        }
-      }
-    }
+    // Tab filter
+    if (activeTab === 'fuel' && log.type !== 'Fuel') return false;
+    if (activeTab === 'expenses' && log.type === 'Fuel') return false;
 
     return true;
   });
 
+  const tabs = [
+    { id: 'fuel', label: 'Fuel', icon: <Fuel className="w-4 h-4" /> },
+    { id: 'expenses', label: 'Expenses', icon: <DollarSign className="w-4 h-4" /> },
+    { id: 'all', label: 'All' },
+  ];
+
   return (
-    <div className="space-y-6 h-[calc(100vh-8rem)] flex flex-col">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-[24px] p-6 border border-[#ECECEC] card-shadow">
-          <div className="text-[10px] font-bold text-[#6B7280] tracking-wider mb-2">TOTAL EXPENSES</div>
-          <div className="text-4xl font-extrabold text-[#111111]">₹{totalExpenses.toLocaleString()}</div>
+    <div className="space-y-6 max-w-[1400px]">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 pb-4 border-b-4 border-[var(--color-border-strong)]">
+        <div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase text-[var(--color-text-primary)] leading-none">Fuel & Expenses</h1>
+          <p className="text-sm font-mono tracking-widest uppercase text-[var(--color-text-muted)] mt-2">COST ANALYSIS &bull; RESOURCE MANAGEMENT</p>
         </div>
-        <div className="bg-white rounded-[24px] p-6 border border-[#ECECEC] card-shadow">
-          <div className="text-[10px] font-bold text-[#6B7280] tracking-wider mb-2">FUEL COSTS</div>
-          <div className="text-4xl font-extrabold text-[#111111]">₹{totalFuel.toLocaleString()}</div>
-        </div>
-        <div className="bg-white rounded-[24px] p-6 border border-[#ECECEC] card-shadow">
-          <div className="text-[10px] font-bold text-[#6B7280] tracking-wider mb-2">MAINTENANCE COSTS</div>
-          <div className="text-4xl font-extrabold text-[#111111]">₹{totalMaintenance.toLocaleString()}</div>
-        </div>
+        <Button onClick={() => setIsModalOpen(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Log Fuel Expense
+        </Button>
       </div>
 
-      <div className="flex flex-wrap justify-between items-center bg-white p-6 rounded-[24px] border border-[#ECECEC] card-shadow gap-4">
-        <div className="flex flex-wrap space-x-3 items-center gap-y-2">
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl px-4 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all"
-          >
-            <option value="All">Type: All (Fuel/Maintenance)</option>
-            <option value="Fuel">Type: Fuel</option>
-            <option value="Maintenance">Type: Maintenance</option>
-          </select>
-          <select
-            value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)}
-            className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl px-4 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all"
-          >
-            <option value="All Time">Time: All Time</option>
-            <option value="This Month">Time: This Month</option>
-            <option value="This Year">Time: This Year</option>
-          </select>
-          <div className="relative">
-            <input
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <KpiCard label="Total Expenses" value={`₹${totalExpenses.toLocaleString()}`} icon={<DollarSign className="w-[18px] h-[18px]" />} />
+        <KpiCard label="Fuel Costs" value={`₹${totalFuel.toLocaleString()}`} icon={<Fuel className="w-[18px] h-[18px]" />} subtitle={`${totalLitres.toLocaleString()} L`} />
+        <KpiCard label="Maintenance Costs" value={`₹${totalMaintenance.toLocaleString()}`} icon={<Wrench className="w-[18px] h-[18px]" />} />
+        <KpiCard label="Avg Cost/KM" value="₹11.2" icon={<TrendingDown className="w-[18px] h-[18px]" />} trend={-3.2} trendLabel="vs last month" />
+      </div>
+
+      {/* Tabs + Filters */}
+      <div className="border-2 border-[var(--color-border-strong)] bg-[var(--color-bg-primary)] rounded-[var(--radius-sm)] overflow-hidden">
+        <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} className="px-5 border-b-2 border-[var(--color-border-strong)]" />
+
+        <div className="px-5 py-4 flex flex-wrap items-center gap-3">
+          <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+            <Input
               type="text"
               placeholder="Search vehicle or details..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-[#ECECEC] bg-[#FAFAFA] text-[#111111] text-sm rounded-2xl pl-4 pr-10 h-12 focus:outline-none focus:ring-1 focus:ring-[#0C0D0D] transition-all placeholder-[#9CA3AF]"
+              className="pl-9"
             />
           </div>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center px-6 h-12 bg-[#0C0D0D] text-white font-semibold text-sm rounded-2xl hover:scale-[1.02] transition-all duration-200"
-        >
-          <Plus className="w-4 h-4 mr-2" /> Log Fuel Expense
-        </button>
-      </div>
 
-      <div className="bg-white rounded-[24px] p-6 border border-[#ECECEC] card-shadow flex-1 overflow-hidden flex flex-col">
-        <div className="overflow-y-auto flex-1 hide-scrollbar">
-          <table className="w-full text-left text-sm">
-            <thead className="sticky top-0 bg-white z-10">
-              <tr className="text-[#6B7280] border-b border-[#ECECEC]">
-                <th className="pb-4 font-medium uppercase text-[10px] tracking-wider">Date</th>
-                <th className="pb-4 font-medium uppercase text-[10px] tracking-wider">Type</th>
-                <th className="pb-4 font-medium uppercase text-[10px] tracking-wider">Vehicle</th>
-                <th className="pb-4 font-medium uppercase text-[10px] tracking-wider">Details</th>
-                <th className="pb-4 font-medium uppercase text-[10px] tracking-wider text-right">Cost</th>
-              </tr>
-            </thead>
-            <tbody className="text-[#111111]">
-              {filteredLogs.map((log) => {
-                const v = vehicles.find((v) => v.id === log.vehicleId);
-                return (
-                  <tr key={log.id} className="border-b border-[#ECECEC] last:border-0 hover:bg-neutral-50 transition-colors">
-                    <td className="py-4 text-[#6B7280]">{new Date(log.date).toLocaleDateString()}</td>
-                    <td className="py-4">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        log.type === 'Fuel' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {log.type}
-                      </span>
-                    </td>
-                    <td className="py-4 font-semibold">{v?.registrationNumber || log.vehicleId}</td>
-                    <td className="py-4 text-[#6B7280]">{log.details}</td>
-                    <td className="py-4 font-semibold text-right">₹{log.cost.toLocaleString()}</td>
-                  </tr>
-                );
-              })}
-              {filteredLogs.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="py-8 text-center text-xs text-[#9CA3AF]">
-                    No expense records found matching criteria.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {/* Table */}
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {['Date', 'Type', 'Vehicle', 'Details', 'Cost'].map(col => (
+                <TableHead key={col} className={col === 'Cost' ? 'text-right' : ''}>{col}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredLogs.map((log) => {
+              const v = vehicles.find((v) => v.id === log.vehicleId);
+              return (
+                <TableRow key={log.id}>
+                  <TableCell>
+                    {new Date(log.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={log.type === 'Fuel' ? 'info' : 'warning'}>{log.type}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <span className="font-bold text-sm text-[var(--color-text-primary)]">{v?.registrationNumber || log.vehicleId}</span>
+                  </TableCell>
+                  <TableCell>{log.details}</TableCell>
+                  <TableCell className="text-right">
+                    <span className="font-mono font-bold">₹{log.cost.toLocaleString()}</span>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+
+        {filteredLogs.length === 0 && (
+          <EmptyState
+            title="No expense records found"
+            description="There are no expense records matching your criteria."
+            action={{ label: 'Clear Filters', onClick: () => { setSearchTerm(''); setTypeFilter('All'); } }}
+          />
+        )}
       </div>
 
       <AddFuelModal

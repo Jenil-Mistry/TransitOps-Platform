@@ -1,10 +1,21 @@
+import { Truck } from 'lucide-react';
+
 export default function SidebarLogo() {
   return (
-    <div className="p-6 flex items-center space-x-3">
-      <div className="w-8 h-8 bg-[#0C0D0D] rounded-lg flex items-center justify-center">
-        <span className="text-white font-bold text-lg">T</span>
+    <div className="px-5 py-5 border-b border-[var(--color-border)]">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-[var(--radius-sm)] bg-[var(--color-brand)] flex items-center justify-center flex-shrink-0">
+          <Truck className="w-5 h-5 text-white" />
+        </div>
+        <div className="min-w-0 hidden md:block">
+          <div className="text-[16px] font-bold text-[var(--color-text-primary)] leading-tight tracking-tight">
+            TransitOps
+          </div>
+          <div className="text-[11px] font-medium text-[var(--color-text-muted)] tracking-wide">
+            Fleet Operations
+          </div>
+        </div>
       </div>
-      <span className="text-xl font-bold text-[#111111] hidden md:block tracking-tight">TransitOps</span>
     </div>
   );
 }

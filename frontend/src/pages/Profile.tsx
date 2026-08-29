@@ -1,96 +1,68 @@
-import { ArrowLeft, User, Mail, Phone, Hash, Building2, MapPin, Shield, Calendar, Key } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import BaseCard from '../components/Cards/BaseCard';
+import { useAuthStore } from '../store/useAuthStore';
+import Avatar from '../components/ui/Avatar';
+import Button from '../components/ui/Button';
+import { Mail, Phone, MapPin, Briefcase, Calendar, Shield } from 'lucide-react';
 import { mockUser } from '../data/mockUser';
 
-// TODO: Replace mockUser with authenticated user data from backend API.
-
 export default function Profile() {
-  const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const userName = user?.name || mockUser.name;
+  const userEmail = user?.email || mockUser.email;
+  const userRole = user?.role || mockUser.role;
+
+  const details = [
+    { label: 'Email', value: userEmail, icon: Mail },
+    { label: 'Phone', value: mockUser.phone, icon: Phone },
+    { label: 'Location', value: mockUser.location, icon: MapPin },
+    { label: 'Department', value: mockUser.department, icon: Briefcase },
+    { label: 'Member since', value: mockUser.memberSince, icon: Calendar },
+    { label: 'Role', value: userRole, icon: Shield },
+  ];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-10 animate-in fade-in duration-300">
+    <div className="space-y-6 max-w-3xl">
       {/* Header */}
-      <div className="flex items-center space-x-4 mb-8">
-        <button 
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-white border border-transparent hover:border-[#ECECEC] transition-all card-shadow hover:shadow-md"
-        >
-          <ArrowLeft className="w-5 h-5 text-[#6B7280]" />
-        </button>
-        <h1 className="text-2xl font-bold text-[#111111]">Profile</h1>
+      <div>
+        <h1 className="text-page-title">Profile</h1>
+        <p className="text-page-subtitle mt-1">Your account details.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Column - Avatar & Quick Info */}
-        <div className="space-y-6">
-          <BaseCard>
-            <div className="flex flex-col items-center p-6 text-center">
-              <div className="w-24 h-24 rounded-full bg-[#FAFAFA] border border-[#ECECEC] flex items-center justify-center text-[#111111] font-bold text-2xl mb-4">
-                {mockUser.avatarUrl ? (
-                  <img src={mockUser.avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
-                ) : (
-                  <span>AF</span>
-                )}
-              </div>
-              <h2 className="text-xl font-bold text-[#111111]">{mockUser.name}</h2>
-              <p className="text-sm font-medium text-[#6B7280] mb-4">{mockUser.role}</p>
-              
-              <span className="inline-flex items-center px-3 py-1 text-[11px] font-bold rounded-full uppercase tracking-wider bg-[#DCFCE7] text-[#16A34A]">
+      {/* Profile Card */}
+      <div className="card overflow-hidden">
+        <div className="px-6 py-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-[var(--color-border)]">
+          <Avatar name={userName} size="lg" className="!w-20 !h-20 !text-[24px]" />
+          <div className="text-center sm:text-left">
+            <h2 className="text-[22px] font-bold text-[var(--color-text-primary)]">{userName}</h2>
+            <p className="text-[14px] text-[var(--color-text-secondary)] mt-1">{userRole}</p>
+            <div className="flex items-center gap-2 mt-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[12px] font-medium bg-[var(--color-success-soft)] text-[var(--color-success)]">
+                <span className="w-1.5 h-1.5 rounded-full bg-current" />
                 {mockUser.status}
               </span>
+              <span className="text-caption">ID: {mockUser.employeeId}</span>
             </div>
-          </BaseCard>
-
-          <BaseCard title="Actions" bodyClassName="p-4 space-y-2">
-             <button className="w-full flex items-center px-4 py-2.5 text-sm font-semibold text-[#111111] bg-white rounded-xl hover:bg-[#FAFAFA] transition-colors border border-[#ECECEC]">
-               <User className="w-4 h-4 mr-3 text-[#6B7280]" /> Edit Profile
-             </button>
-             <button className="w-full flex items-center px-4 py-2.5 text-sm font-semibold text-[#111111] bg-white rounded-xl hover:bg-[#FAFAFA] transition-colors border border-[#ECECEC]">
-               <Key className="w-4 h-4 mr-3 text-[#6B7280]" /> Change Password
-             </button>
-          </BaseCard>
+          </div>
+          <div className="sm:ml-auto">
+            <Button variant="outline" size="sm">Edit Profile</Button>
+          </div>
         </div>
 
-        {/* Right Column - Details */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Personal Information */}
-          <BaseCard title="Personal Information" bodyClassName="p-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-8">
-              <InfoField icon={User} label="Full Name" value={mockUser.name} />
-              <InfoField icon={Mail} label="Email Address" value={mockUser.email} />
-              <InfoField icon={Phone} label="Phone Number" value={mockUser.phone} />
-              <InfoField icon={Hash} label="Employee ID" value={mockUser.employeeId} />
-              <InfoField icon={Building2} label="Department" value={mockUser.department} />
-              <InfoField icon={MapPin} label="Location" value={mockUser.location} />
-            </div>
-          </BaseCard>
-
-          {/* Account Information */}
-          <BaseCard title="Account Information" bodyClassName="p-6">
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-8">
-               <InfoField icon={Shield} label="Role" value={mockUser.role} />
-               <InfoField icon={Calendar} label="Member Since" value={mockUser.memberSince} />
-             </div>
-          </BaseCard>
-
+        <div className="divide-y divide-[var(--color-border)]">
+          {details.map(detail => {
+            const Icon = detail.icon;
+            return (
+              <div key={detail.label} className="px-6 py-4 flex items-center gap-4">
+                <div className="w-9 h-9 rounded-[var(--radius-sm)] bg-[var(--color-bg-secondary)] flex items-center justify-center text-[var(--color-text-muted)] flex-shrink-0">
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium text-[var(--color-text-muted)] uppercase tracking-wide">{detail.label}</p>
+                  <p className="text-[14px] text-[var(--color-text-primary)] mt-0.5">{detail.value}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
-    </div>
-  );
-}
-
-function InfoField({ icon: Icon, label, value }: { icon: any, label: string, value: string }) {
-  return (
-    <div className="flex items-start">
-      <div className="mt-0.5 flex-shrink-0 text-[#9CA3AF]">
-        <Icon className="w-5 h-5" />
-      </div>
-      <div className="ml-3.5">
-        <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider mb-1">{label}</p>
-        <p className="text-sm font-semibold text-[#111111]">{value}</p>
       </div>
     </div>
   );
